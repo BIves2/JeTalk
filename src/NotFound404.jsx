@@ -1,3 +1,4 @@
+import Footer from "./Footer"
 import NavBar from "./NavBar"
 
 function NotFound404(){
@@ -5,6 +6,7 @@ function NotFound404(){
         <div className="pt-30">
             <NavBar />
             <h1>404 Erreur : Page introuvable</h1>
+            <Footer />
         </div>
     )
 }

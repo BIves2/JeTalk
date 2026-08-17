@@ -12,14 +12,14 @@ import { Link } from "react-router-dom"
  */
 function Home(){
     return(
-        <div className="pt-22 ">
+        <div className="pt-20 ">
             <NavBar />
 
             <div className="flex flex-col">
                 <div className="flex md:flex-row pb-10 bg-blue-200 flex-col md:pl-10">
                     <div className="flex flex-col md:mr-30 md:w-250 w-full md:ml-5">
                         <h1 className="text-5xl md:mr-10 mr-5 mb-5 md:5">
-                            Maitrisez le <span className="text-amber-500">Francais</span> et l'<span className="text-amber-500">Anglais <br/></span> comme jamais au paravant !
+                            Maitrisez le <span className="text-amber-500">Francais</span> et l'<span className="text-amber-500">Anglais <br/></span> comme jamais auparavant !
                         </h1>
                         <img src={draw} alt="" className="md:hidden border-2 border-white shadow-2xl shadow-black rounded-full mb-10 w-60 h-50 self-center"/>
                         <p className="md:mt-5 mt">
@@ -28,7 +28,7 @@ function Home(){
                         <Link className="text-center cursor-pointer self-center md:self-start mt-10 rounded-4xl bg-amber-500 p-3 w-80 md:w-100 font-bold text-lg text-white">
                             Catalogue de Fonctionnalités
                         </Link>
-                        <Link className="text-center cursor-pointer self-center md:self-start mt-5 rounded-4xl bg-blue-600 p-3 w-80 md:w-60 font-bold text-lg text-white">
+                        <Link to="/signup" className="text-center cursor-pointer self-center md:self-start mt-5 rounded-4xl bg-blue-600 p-3 w-80 md:w-60 font-bold text-lg text-white">
                             S'inscrire maintenant
                         </Link>
                     </div>
