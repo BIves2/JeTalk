@@ -21,7 +21,7 @@ function Home(){
                         <h1 className="text-5xl md:mr-10 mr-5 mb-5 md:5">
                             Maitrisez le <span className="text-amber-500">Francais</span> et l'<span className="text-amber-500">Anglais <br/></span> comme jamais auparavant !
                         </h1>
-                        <img src={draw} alt="" className="md:hidden border-2 border-white shadow-2xl shadow-black rounded-full mb-10 w-60 h-50 self-center"/>
+                        <img src={draw} alt="HEADDRAW" className="md:hidden border-2 border-white shadow-2xl shadow-black rounded-full mb-10 w-60 h-50 self-center"/>
                         <p className="md:mt-5 mt">
                             <span className="font-bold">JeTalk:</span> Votre assistant conversationnel intelligent pour maitriser les langues francaise et anglaise.  
                         </p>
@@ -32,25 +32,25 @@ function Home(){
                             S'inscrire maintenant
                         </Link>
                     </div>
-                    <img src={draw} alt="" className="hidden md:flex border-2 border-white shadow-2xl shadow-black rounded-full ml-auto mr-60 w-110 h-100"/>
+                    <img src={draw} alt="HEADDRAW" className="hidden md:flex border-2 border-white shadow-2xl shadow-black rounded-full ml-auto mr-60 w-110 h-100"/>
                 </div>
                 <div className="flex flex-col md:flex-row justify-around mt-[-20px] items-center">
                     <div className="h-60 w-80 md:w-1/4 rounded-lg bg-white shadow-2xl mb-10 flex flex-row p-2">
-                        <img src={flag} alt="" className="size-20"/>
+                        <img src={flag} alt="CAMEROONFLAG" className="size-20"/>
                         <div>
                             <strong>Intégrez le bilinguisme National</strong>
                             <p className="p-2 w-full">Participez activemnt au bilinguisme national et devenez un patriote camerounais a part entiere en maitrisant les deux langues et cultures camerounaises officielles</p>
                         </div>
                     </div>
                     <div className="h-60 w-80 md:w-1/4 bg-white rounded-lg shadow-2xl mb-10 flex flex-row p-2">
-                        <img src={ai} alt="" className="size-20 rounded-full"/>
+                        <img src={ai} alt="AI" className="size-20 rounded-full"/>
                         <div>
                             <strong>L'IA au coeur de l'apprentissage</strong>
                             <p className="p-2 w-full">Profitez d'une experience completement enrichie avec l'intelligence artificielle au coeur de la production des contenus, une experience unique et inedite</p>
                         </div>
                     </div>
                     <div className="h-60 w-80 md:w-1/4 bg-white rounded-lg shadow-2xl mb-10 flex flex-row p-2">
-                        <img src={learning} alt="" className="size-20"/>
+                        <img src={learning} alt="LEARNING" className="size-20"/>
                         <div>
                             <strong>Apprentissage personnalisé</strong>
                             <p className="p-2 w-full">Votre apprentissage entierement adapte a vos besoins et a votre rythme, tout en respectant vos exigeances et vos disponibilites</p>

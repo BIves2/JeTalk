@@ -5,7 +5,7 @@ function Footer(){
         <div>
             <div className="w-full bg-gray-400/20 flex flex-col md:flex-row">
                 <div className="flex flex-col w-80 md:w-1/4 p-5">
-                    <img src={logo} alt="" className="size-10"/>
+                    <img src={logo} alt="JETALKLOGO" className="size-10"/>
                     <p className="text-sm">Votre assistant conversationnel intelligent pour maitriser les langues francaise et anglaise.</p>
 
                 </div>
