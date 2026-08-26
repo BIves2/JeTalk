@@ -24,3 +24,5 @@ dist-ssr
 *.sw?
 *.antigravitycli
 .env
+
+/src/generated/prisma

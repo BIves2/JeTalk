@@ -17,11 +17,11 @@ function NavBar({children}){
         <div className="fixed w-full flex flex-row shadow-xl shadow-gray-500/30 top-0 z-20 bg-white">
 
             <div className="w-1/3 h-20 [clip-path:polygon(0%_0%,80%_0%,100%_100%,0%_100%)] overflow-hidden md:flex flex-row items-center content-center hidden">
-                <img src={draw} alt="" height={50} width={80}/>
-                <img src={word} alt="" height={20} width={200}/>
+                <img src={draw} alt="HEADDRAW" height={50} width={80}/>
+                <img src={word} alt="JETALK" height={20} width={200}/>
             </div>
             <div className="w-1/4 h-20 [clip-path:polygon(0%_0%,80%_0%,100%_100%,0%_100%)] overflow-hidden md:hidden flex-row items-center content-center flex">
-                <img src={logo} alt="" className="size-18"/>
+                <img src={logo} alt="JETALKLOGO" className="size-18"/>
             </div>
             <div className="flex-1 h-20 bg-blue-200 [clip-path:polygon(5%_0%,100%_0%,100%_100%,0%_100%)] pl-[10%] md:flex flex-row items-center content-center hidden">
                 <Link to="/" className="mr-20 font-bold cursor-pointer text-blue-400"
@@ -37,7 +37,7 @@ function NavBar({children}){
                 <Link className="mr-20 font-bold cursor-pointer">
                     Plan
                 </Link>
-                <Link className="mr-20 font-bold cursor-pointer text-red-700">
+                <Link to="/login" className="mr-20 font-bold cursor-pointer text-red-700">
                     Se Connecter
                 </Link>
                 <TranslationButton />

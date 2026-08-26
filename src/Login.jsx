@@ -32,7 +32,7 @@ function Login(){
                         </button>
                     </div>
                     <div className="flex flex-row">
-                        <input type="submit" value="Se connecter" className="p-5 rounded-4xl m-5 w-1/2 bg-green-400 md:bg-green-200 hover:bg-green-400 hover:text-white"/>
+                        <input type="submit" value="Connexion" className="p-5 rounded-4xl m-5 w-1/2 bg-green-400 md:bg-green-200 hover:bg-green-400 hover:text-white"/>
                         <input type="reset" value="Reinitialiser" className="p-5 rounded-4xl m-5 w-1/2 bg-red-400 md:bg-red-200 hover:bg-red-400 hover:text-white"/>
                     </div>
                     <p className="text-center">Vous n'avez pas encore de compte ? <Link to="/signup" className="text-blue-800 underline">Inscrivez-vous</Link></p>
