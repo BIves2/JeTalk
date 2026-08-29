@@ -15,6 +15,7 @@ function SignUp(){
         <div className="min-h-screen flex flex-col">
             <NavBar />
             <div className="pt-20 flex flex-col md:flex-row flex-1">
+                {/**Left Section of signup page*/}
                 <form className="w-full md:w-1/2 p-5">
 
                     <fieldset className="flex flex-col p-5 rounded-2xl shadow-2xl">
@@ -89,9 +90,23 @@ function SignUp(){
                     </fieldset>
 
                 </form>
-                <div className="w-full md:w-1/2 bg-blue-200 md:flex hidden">
-                    <h1 className="text-4xl text-center font-bold">Inscrivez vous sur JeTalk</h1>
+                {/**Right section of the signup page */}
+                <div className="w-full md:w-1/2 bg-blue-200 md:flex hidden flex-col p-5">
+                    <h1 className="text-4xl text-center font-bold pb-5">Inscrivez vous sur JeTalk</h1>
+                    <p>Inscrivez vous sur la plateforme JeTalk pour beneficier de toutes fonctionnalites que peut vous offir notre solution. 
+                        <br />Votre inscription doit respecter les consignes suivantes : 
+                        <ul className="list-disc p-5">
+                            <li>Le mot de passe doit contenir au moins 8 caracteres (avec des majuscules, des minuscules et des caracteres speciaux);</li>
+                            <li>Un email ne peut creer qu'un seul compte;</li>
+                            <li>Votre nom d'utilisateur doit avoir minimum 3 lettres;</li>
+                            <li>La confimation du mot de passe doit correspondre au mot de passe inscrit dans le champ mot de pass</li>
+                            <li>Entrez votre niveau exacte d'anglais pour permettre un suivi de qualite. Si vous ne maitrisez pas votre niveau, inscrivez Amateur, vous pourrez passer un test pour determiner plus precisement votre niveau</li>
+                            <li>Si vous possedez deja un compte, vous pouvez cliquer sur le lien de connexion en bas du formulaire</li>
+                        </ul>
+                        Tout en vous remerciant de votre inscription et de la confiance que vous accordez a JeTalk, nous vous souhaitons un heureux sejour sur la plateforme JeTalk
+                    </p>
                 </div>
+
             </div>
             <Footer />
         </div>
