@@ -3,6 +3,7 @@ import Home from "./Home";
 import NotFound404 from "./NotFound404";
 import SignUp from "./SignUp";
 import Login from "./Login";
+import Dashboard from "./Dashboard";
 
 /**
  * file for global app views routes
@@ -14,6 +15,7 @@ function App(){
             <Route path="/" element={<Home />} />
             <Route path="/signup" element={<SignUp />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/dashboard" element={<Dashboard />}/>
             <Route path="*" element={<NotFound404 />} />
         </Routes>
     )
