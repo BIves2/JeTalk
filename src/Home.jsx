@@ -5,12 +5,14 @@ import ai from "../src/assets/ai.png"
 import learning from "../src/assets/learning.png"
 import Footer from "./Footer"
 import { Link } from "react-router-dom"
+import { useTranslation } from "react-i18next"
 
 /**
  * Reception area for those not connected
  * @returns home space
  */
 function Home(){
+    const {t} = useTranslation()
     return(
         <div className="pt-20 ">
             <NavBar />
@@ -19,7 +21,7 @@ function Home(){
                 <div className="flex md:flex-row pb-10 bg-blue-200 flex-col md:pl-10">
                     <div className="flex flex-col md:mr-30 md:w-250 w-full md:ml-5">
                         <h1 className="text-5xl md:mr-10 mr-5 mb-5 md:5">
-                            Maitrisez le <span className="text-amber-500">Francais</span> et l'<span className="text-amber-500">Anglais <br/></span> comme jamais auparavant !
+                           {t('master')} le <span className="text-amber-500">Francais</span> et l'<span className="text-amber-500">Anglais <br/></span> comme jamais auparavant !
                         </h1>
                         <img src={draw} alt="HEADDRAW" className="md:hidden border-2 border-white shadow-2xl shadow-black rounded-full mb-10 w-60 h-50 self-center"/>
                         <p className="md:mt-5 mt">

@@ -1,27 +1,16 @@
-import { useState } from "react"
+import { useTranslation } from "react-i18next"
 
 function TranslationButton(){
-    const [language, setLanguage] = useState("Fr")
-    const changeLanguage = (requiredLanguage) => {
-        document.cookie = `googtrans=/fr/${requiredLanguage}; path=/; domain=${window.location.hostname}`
-        document.cookie = `googtrans=/fr/${requiredLanguage}; path=/`
-        setLanguage(requiredLanguage)
-        window.location.reload()
+    const {i18n} = useTranslation()
+    const changeLanguage = () => {
+        const nextLang = i18n.language === 'fr' ? 'en' : 'fr'
+        i18n.changeLanguage(nextLang)
     }
     return (
         <div className="flex gap-4">
             <button className="border-white rounded-lg border p-2 bg-green-400/40 font-bold sm:ml-auto cursor-pointer"  
-                onClick={()=>{
-                    if(language === 'Fr'){
-                        setLanguage('En')
-                        changeLanguage('en')
-                    } else {
-                        setLanguage('Fr')
-                        changeLanguage('fr')
-                    }
-                }}
-            >
-                {(language=='Fr')?"FR":"EN"}
+                onClick={changeLanguage}>
+                {i18n.language==='fr'?"FR":"EN"}
             </button>
         </div>
     )

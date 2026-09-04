@@ -1,13 +1,13 @@
 import express, { json } from 'express'
 import cors from 'cors'
-import router from '../routes/modelRoutes.js'
+import UserRoutes from '../routes/UserRoutes.js'
 
 const app = express()
 
 app.use(cors())
 app.use(json())
-app.use("/",router)
+app.use("/",UserRoutes)
 
 app.listen(5000, ()=>{
-    console.log("Serveur lance sur le port 5000 : http://localhost:5000")
+    console.log("Server launched on port 5000 : http://localhost:5000")
 })

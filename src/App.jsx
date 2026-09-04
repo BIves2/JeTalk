@@ -7,7 +7,7 @@ import Dashboard from "./Dashboard";
 
 /**
  * file for global app views routes
- * @returns 
+ * @returns routes of the app
  */
 function App(){
     return(

@@ -1,38 +1,41 @@
 import "dotenv/config"
 import prisma from "../config/db.js"
 
-const createUser = async (req, res)=>{
-    const data = req.body
+const createUser = async (name, lang, lvl, email, password, profil=null, description=null)=>{
+     const userData = {
+        nom : name,
+        langue: lang,
+        niveau: lvl,
+        compte: {
+            create: {
+                email : email,
+                mot_de_passe : password,
+            }
+        }
+    }
+    if(profil)userData.profil = profil
+    if(description)userData.description = description
     const newUser = await prisma.utilisateur.create({
-        data : {
-            nom : data.name,
-            langue: data.lang,
-            niveau: data.lvl,
+       data: userData
+    })
+    return newUser
+} 
+
+const getUserById = async (id)=>{
+    const userReturned = await prisma.utilisateur.findFirst({
+        where: {id: id}
+    })
+    return userReturned
+}
+
+const getUserByEmail = async (email)=>{
+    const userReturned = await prisma.utilisateur.findFirst({
+        where: {
             compte: {
-                create: {
-                    email : data.email,
-                    mot_de_passe : data.password
-                }
+                email: email
             }
         }
     })
-    console.log("User cree avec succes")
-    res.json({msg: "User Created"})
-} 
-
-const getUserById = async (req, res)=>{
-    const id = req.body.id
-    const userReturned = await prisma.users.findFirst({
-        where: {id: id}
-    })
-    res.json({name: userReturned.name})
-}
-
-const getUserByEmail = async (req, res)=>{
-    const email = req.body.email
-    const userReturned = await prisma.users.findFirst({
-        where: {email: email}
-    })
-    res.json({name: userReturned.name})
+    return userReturned
 }
 export {createUser, getUserById, getUserByEmail}
