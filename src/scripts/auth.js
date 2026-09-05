@@ -10,7 +10,7 @@ async function signup(name, email, lang, lvl, password){
         if(error.response){
             return error.response
         }
-        return {status: 503, data: {msg: "Impossible de joindre le serveur. Verifier s'il est ouvert et si vous y etes conecte puis reessayez"}}
+        return {status: 503, data: {msg: "Impossible de joindre le serveur. Vérifiez s'il est ouvert et si vous y êtes connecté puis réessayez"}}
     }
 }
 async function verifyInfos(email, password){
@@ -21,7 +21,7 @@ async function verifyInfos(email, password){
         if(error.response) {
             return error.response
         }
-        return {status: 503, data: {msg: "Impossible de joindre le serveur. Verifier s'il est ouvert et si vous y etes conecte puis reessayez"}}
+        return {status: 503, data: {msg: "Impossible de joindre le serveur. Vérifiez s'il est ouvert et si vous y êtes connecté puis réessayez"}}
     }
 }
 

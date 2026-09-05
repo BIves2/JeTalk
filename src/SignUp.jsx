@@ -7,6 +7,7 @@ import { Navigate } from "react-router-dom"
 
 /**Scripts for API communication */
 import { verifyInfos, signup } from "./scripts/auth.js"
+import { Trans, useTranslation } from "react-i18next"
 
 /**
  * Page for signing up
@@ -14,6 +15,7 @@ import { verifyInfos, signup } from "./scripts/auth.js"
  */
 function SignUp(){
 
+    const {t} = useTranslation()
     const [passwordVisible, setPasswordVisible] = useState(false)
     const [confirmVisible, setConfirmVisible] = useState(false)
     const [name, setName] = useState("")
@@ -26,15 +28,15 @@ function SignUp(){
 
     const verifyPassword = (password)=>{
         if(password.length < 8){
-            setMessage("Le mot de passe doit contenir au moins 8 caracteres")
+            setMessage(t("signUpPage.errors.passwordMinLength"))
         } else if(!(/[a-z]/.test(password))){
-            setMessage("Minuscule manquante !")
+            setMessage(t("signUpPage.errors.passwordLowercase"))
         } else if(!(/[A-Z]/.test(password))){
-            setMessage("Majuscule manquante dans le mot de passe !")
+            setMessage(t("signUpPage.errors.passwordUppercase"))
         } else if(!(/[!~`@#$%&%^&*()_\-+={}\[\];':"<>.,\?\\]/.test(password))){
-            setMessage("Caractere special manquant dans le mot de passe !")
+            setMessage(t("signUpPage.errors.passwordSpecialChar"))
         } else if(!(/[0-9]/.test(password))){
-            setMessage("Chiffre manquant dans le mot de passe")
+            setMessage(t("signUpPage.errors.passwordDigit"))
         } else {
             setMessage("")
         }
@@ -48,30 +50,27 @@ function SignUp(){
                 <form className="w-full md:w-1/2 p-5">
 
                     <fieldset className="flex flex-col p-5 rounded-2xl shadow-2xl">
-                        <h1 className="text-3xl font-bold mb-10">Creez votre compte JeTalk</h1>
+                        <h1 className="text-3xl font-bold mb-10">{t('signUpPage.title')}</h1>
 
-                        <label htmlFor="name">Nom complet</label>
+                        <label htmlFor="name">{t('signUpPage.form.fullNameLabel')}</label>
                         <input type="text" className="border mb-5 p-2 rounded-xl" name="name"
                             onChange={(e)=>{
                                 setName(e.target.value)
-                                value = {name}
                             }}
                         />
 
-                        <label htmlFor="email">Adresse e-mail</label>
+                        <label htmlFor="email">{t('signUpPage.form.emailLabel')}</label>
                         <input type="email" className="border mb-5 p-2 rounded-xl" name="email"
                             onChange={(e)=>{
                                 setEmail(e.target.value)
-                                value = {email}
                             }}
                         />
 
                         <div className="flex flex-col relative">
-                            <label htmlFor="password">Mot de passe</label>
+                            <label htmlFor="password">{t('signUpPage.form.passwordLabel')}</label>
                             <input type={passwordVisible ? "text" : "password"} name="password" className="border mb-5 p-2 rounded-xl"
                                 onChange={(e)=>{
                                     setPassword(e.target.value)
-                                    value = {password}
                                 }}
                             />
                             <button
@@ -86,11 +85,10 @@ function SignUp(){
                         </div>
 
                         <div className="flex flex-col relative">
-                            <label htmlFor="confirm">Confirmez le mot de passe</label>
+                            <label htmlFor="confirm">{t('signUpPage.form.confirmPasswordLabel')}</label>
                             <input type={confirmVisible ? "text" : "password"} name="confirm" className="border mb-5 p-2 rounded-xl"
                                 onChange={(e)=>{
                                 setConfirmPassword(e.target.value)
-                                value = {confirmPassword}
                             }}
                             />
                             <button
@@ -104,37 +102,37 @@ function SignUp(){
                             </button>
                         </div>
 
-                        <label htmlFor="lang">Langue a apprendre</label>
+                        <label htmlFor="lang">{t('signUpPage.form.langLabel')}</label>
                         <select name="lang" className="mb-5 border p-2 rounded-xl" onChange={(e)=>{setLang(e.target.value)}}>
-                            <option value="en">Anglais</option>
-                            <option value="fr">Francais</option>
+                            <option value="en">{t('signUpPage.form.langEnglish')}</option>
+                            <option value="fr">{t('signUpPage.form.langFrench')}</option>
                         </select>
-                        <label htmlFor="">Niveau actuel</label>
+                        <label htmlFor="">{t('signUpPage.form.levelLabel')}</label>
                         <div className="grid grid-cols-2 gap-3 w-1/2">
                             <label htmlFor="level">
                                 <input type="radio" name="level" onClick={()=>setLevel("Amateur")} defaultChecked/>
-                                <strong>Amateur</strong>
+                                <strong>{t('signUpPage.levels.amateur')}</strong>
                             </label>
                             <label htmlFor="level">
                                 <input type="radio" name="level" onClick={()=>setLevel("Intermediaire")}/>
-                                <strong>Intermediaire</strong>
+                                <strong>{t('signUpPage.levels.intermediate')}</strong>
                             </label>
                             <label htmlFor="level">
                                 <input type="radio" name="level" onClick={()=>setLevel("Avance")}/>
-                                <strong>Avance</strong>
+                                <strong>{t('signUpPage.levels.advanced')}</strong>
                             </label>
                             <label htmlFor="level">
                                 <input type="radio" name="level" onClick={()=>setLevel("Expert")}/>
-                                <strong>Expert</strong>
+                                <strong>{t('signUpPage.levels.expert')}</strong>
                             </label>
                         </div>
                         <strong className="text-center m-5 text-red-500">{message}</strong>
                         <div className="flex flex-row">
-                            <input type="submit" value="S'inscrire" className="p-5 rounded-4xl m-5 w-1/2 bg-green-400 md:bg-green-200 hover:bg-green-400 hover:text-white"
+                            <input type="submit" value={t('signUpPage.buttons.submit')} className="p-5 rounded-4xl m-5 w-1/2 bg-green-400 md:bg-green-200 hover:bg-green-400 hover:text-white"
                                onClick={async (e)=>{
                                 e.preventDefault()
                                 if(!email.trim() || !password.trim() || !confirmPassword.trim() || !name.trim() || !lang.trim() || !level.trim()){
-                                    setMessage("Veuillez remplir tous les champs avant de soumettre le formulaire !")
+                                    setMessage(t("signUpPage.errors.fillAllFields"))
                                 }else{
                                     setMessage("")
                                     const response = await verifyInfos(email, password)
@@ -142,7 +140,7 @@ function SignUp(){
                                         setMessage(response.data.msg)
                                     }else{
                                         if(password != confirmPassword){
-                                            setMessage("La confirmation du mot de passe et le mot de passe ne sont pas similaires")
+                                            setMessage(t("signUpPage.errors.passwordMismatch"))
                                         } else {
                                             const response = await signup(name, email, lang, level, password)
                                             if(response.status !== 200 && response.status !== 201){
@@ -155,32 +153,37 @@ function SignUp(){
                                 }
                                }}
                             />
-                            <input type="reset" value="Reinitialiser" className="p-5 rounded-4xl m-5 w-1/2 bg-red-400 md:bg-red-200 hover:bg-red-400 hover:text-white"/>
+                            <input type="reset" value={t('signUpPage.buttons.reset')} className="p-5 rounded-4xl m-5 w-1/2 bg-red-400 md:bg-red-200 hover:bg-red-400 hover:text-white"/>
                         </div>
                         <label htmlFor=""className="flex flex-row">
                             <input type="checkbox" name="" id="" className="size-15 md:size-5"/>
-                            <span className="m-1 mb-10">Je confirme mon niveau de langue et j'accepte les conditions d'utilisation et la politique de confidentialite</span>
+                            <span className="m-1 mb-10">{t('signUpPage.form.termsAgreement')}</span>
                         </label>
-                        <p>Vous avez deja un compte ? <Link to="/login" className="text-blue-800 [text-decoration:underline]">Connectez-vous</Link></p>
+                        <p>{t('signUpPage.alreadyHaveAccount')} <Link to="/login" className="text-blue-800 [text-decoration:underline]">{t('signUpPage.loginLink')}</Link></p>
                     </fieldset>
 
                 </form>
                 {/**Right section of the signup page */}
                 <div className="w-full md:w-1/2 bg-blue-200 md:flex hidden flex-col p-5">
-                    <h1 className="text-4xl text-center font-bold pb-5">Inscrivez vous sur JeTalk</h1>
-                    <p>Inscrivez vous sur la plateforme JeTalk pour beneficier de toutes fonctionnalites que peut vous offir notre solution. 
-                        <br />Votre inscription doit respecter les consignes suivantes : 
+                    <h1 className="text-4xl text-center font-bold pb-5">{t('signUpPage.info.title')}</h1>
+                    <div>
+                        <p>{t('signUpPage.info.intro')}</p>
                         <ul className="list-disc p-5">
-                            <li>Tous les champs de ce formulaires sont <strong>obligatoires</strong></li>
-                            <li>Le mot de passe doit contenir au moins 8 caracteres (avec des majuscules, des minuscules et des caracteres speciaux);</li>
-                            <li>Un email ne peut creer qu'un seul compte;</li>
-                            <li>Votre nom d'utilisateur doit avoir minimum 3 lettres;</li>
-                            <li>La confimation du mot de passe doit correspondre au mot de passe inscrit dans le champ mot de pass</li>
-                            <li>Entrez votre niveau exacte d'anglais pour permettre un suivi de qualite. Si vous ne maitrisez pas votre niveau, inscrivez Amateur, vous pourrez passer un test pour determiner plus precisement votre niveau</li>
-                            <li>Si vous possedez deja un compte, vous pouvez cliquer sur le lien de connexion en bas du formulaire</li>
+                            <li>
+                                <Trans
+                                    i18nKey="signUpPage.info.rules.allFieldsRequired"
+                                    components={{1: <strong />}}
+                                />
+                            </li>
+                            <li>{t('signUpPage.info.rules.passwordRequirements')}</li>
+                            <li>{t('signUpPage.info.rules.oneAccountPerEmail')}</li>
+                            <li>{t('signUpPage.info.rules.usernameMinLength')}</li>
+                            <li>{t('signUpPage.info.rules.confirmPasswordMatch')}</li>
+                            <li>{t('signUpPage.info.rules.languageLevelAdvice')}</li>
+                            <li>{t('signUpPage.info.rules.loginLinkAdvice')}</li>
                         </ul>
-                        Tout en vous remerciant de votre inscription et de la confiance que vous accordez a JeTalk, nous vous souhaitons un heureux sejour sur la plateforme JeTalk
-                    </p>
+                        <p>{t('signUpPage.info.thankYou')}</p>
+                    </div>
                 </div>
 
             </div>

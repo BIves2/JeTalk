@@ -3,6 +3,7 @@ import Footer from "./Footer"
 import NavBar from "./NavBar"
 import {Eye, EyeOff} from "lucide-react"
 import { Link } from "react-router-dom"
+import { useTranslation } from "react-i18next"
 
 /**
  * Page to log into JeTalk platform
@@ -10,16 +11,17 @@ import { Link } from "react-router-dom"
  */
 function Login(){
     const [passwordVisible, setPasswordVisible] = useState(false)
+    const {t} = useTranslation()
     return (
         <div className="pt-20 flex flex-col">
             <NavBar />
             <div className="md:w-1/2 self-center rounded-3xl flex flex-col h-full shadow-2xl p-5 mb-10 mt-10">
-                <h1 className="font-bold text-4xl pb-10">Connectez-vous a JeTalk</h1>
+                <h1 className="font-bold text-4xl pb-10">{t("loginPage.title")}</h1>
                 <form className="self-center w-full flex flex-col">
-                    <label htmlFor="">Adresse email</label>
+                    <label htmlFor="">{t("loginPage.emailLabel")}</label>
                     <input type="email" name="" id="" className="border mb-5 p-2 rounded-xl"/>
                     <div className="flex flex-col relative">
-                        <label htmlFor="">Mot de passe</label>
+                        <label htmlFor="">{t("loginPage.passwordLabel")}</label>
                         <input type={passwordVisible ? "text" : "password"} name="" id="" className="border mb-5 p-2 rounded-xl"/>
                         <button
                             onClick={(e) => {
@@ -32,10 +34,10 @@ function Login(){
                         </button>
                     </div>
                     <div className="flex flex-row">
-                        <input type="submit" value="Connexion" className="p-5 rounded-4xl m-5 w-1/2 bg-green-400 md:bg-green-200 hover:bg-green-400 hover:text-white"/>
-                        <input type="reset" value="Reinitialiser" className="p-5 rounded-4xl m-5 w-1/2 bg-red-400 md:bg-red-200 hover:bg-red-400 hover:text-white"/>
+                        <input type="submit" value={t("loginPage.buttons.submit")} className="p-5 rounded-4xl m-5 w-1/2 bg-green-400 md:bg-green-200 hover:bg-green-400 hover:text-white"/>
+                        <input type="reset" value={t("loginPage.buttons.reset")} className="p-5 rounded-4xl m-5 w-1/2 bg-red-400 md:bg-red-200 hover:bg-red-400 hover:text-white"/>
                     </div>
-                    <p className="text-center">Vous n'avez pas encore de compte ? <Link to="/signup" className="text-blue-800 underline">Inscrivez-vous</Link></p>
+                    <p className="text-center">{t("loginPage.noAccountPrompt")} <Link to="/signup" className="text-blue-800 underline">{t("loginPage.signupLink")}</Link></p>
                 </form>
             </div>
             <Footer />

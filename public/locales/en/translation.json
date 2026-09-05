@@ -1,3 +1,109 @@
 {
-    "master": "Master"
+    "homePage":{
+        "bigMsg": "Master <1>French</1> and <1>English</1> like never before",
+        "presentation": "<1>JeTalk</1>, your personal language assistant. From absolute beginner to complete mastery, progress at your own pace with confidence.",
+        "buttons":{
+            "catalog": "Catalog of features",
+            "signup": "Signup now"
+        },
+        "cards":{
+            "cmr": {
+                "title": "Embrace national bilingualism.",
+                "content": "Take an active part in national bilingualism and become a fully-fledged Cameroonian patriot by mastering both official languages and cultures"
+            },
+            "ai":{
+                "title": "AI at the heart of learning",
+                "content": "Enjoy a fully enriched experience where artificial intelligence adapts to your pace to offer you a unique and unprecedented journey"
+            },
+            "learning":{
+                "title": "Personalized learning.",
+                "content": "A path fully tailored to your needs and pace, designed to fit your goals and availability."
+            }
+        }
+    },
+
+    "navBar":{
+        "home": "Home",
+        "features": "Features",
+        "plans": "Plans",
+        "login": "Login"
+    },
+
+    "footer":{
+        "slogan": "Your AI assistant for mastering French and English.",
+        "legalTitle": "Legal",
+        "termsOfUse": "Terms of Use",
+        "privacyPolicy": "Privacy Policy",
+        "aboutUs": "About Us",
+        "contactUs": "Contact Us",
+        "usefulLinks": "Useful Links",
+        "location": "Yaounde, Cameroon",
+        "copyright": "© 2026 JeTalk. All Rights reserved"
+    },
+
+    "loginPage": {
+        "title": "Log in to JeTalk",
+        "emailLabel": "Email address",
+        "passwordLabel": "Password",
+        "buttons": {
+            "submit": "Log In",
+            "reset": "Reset"
+        },
+        "noAccountPrompt": "Don't have an account yet?",
+        "signupLink": "Sign up"
+    },
+
+    "signUpPage": {
+        "title": "Create your account",
+        "form": {
+            "fullNameLabel": "Full name",
+            "emailLabel": "Email address",
+            "passwordLabel": "Password",
+            "confirmPasswordLabel": "Confirm password",
+            "langLabel": "Language to learn",
+            "langEnglish": "English",
+            "langFrench": "French",
+            "levelLabel": "Current level",
+            "termsAgreement": "I confirm my language level and accept the terms of use and privacy policy"
+        },
+        "levels": {
+            "amateur": "Amateur",
+            "intermediate": "Intermediate",
+            "advanced": "Advanced",
+            "expert": "Expert"
+        },
+        "errors": {
+            "passwordMinLength": "Password must contain at least 8 characters",
+            "passwordLowercase": "Missing lowercase letter!",
+            "passwordUppercase": "Missing uppercase letter in password!",
+            "passwordSpecialChar": "Missing special character in password!",
+            "passwordDigit": "Missing digit in password",
+            "fillAllFields": "Please fill in all fields before submitting the form!",
+            "passwordMismatch": "Password confirmation does not match the password"
+        },
+        "buttons": {
+            "submit": "Sign Up",
+            "reset": "Reset"
+        },
+        "alreadyHaveAccount": "Already have an account?",
+        "loginLink": "Log in",
+        "info": {
+            "title": "Sign up on JeTalk",
+            "intro": "Sign up on the JeTalk platform to take advantage of all features our solution offers. Your registration must respect the following guidelines:",
+            "rules": {
+                "allFieldsRequired": "All fields in this form are <1>mandatory</1>",
+                "passwordRequirements": "Password must contain at least 8 characters (with uppercase, lowercase, and special characters);",
+                "oneAccountPerEmail": "An email can only create one account;",
+                "usernameMinLength": "Your username must have at least 3 letters;",
+                "confirmPasswordMatch": "Password confirmation must match the password in the password field;",
+                "languageLevelAdvice": "Enter your exact level of English to allow quality tracking. If you don't master your level, select Amateur, you can take a test to determine your level more precisely;",
+                "loginLinkAdvice": "If you already have an account, you can click on the login link at the bottom of the form."
+            },
+            "thankYou": "Thanking you for your registration and the trust you place in JeTalk, we wish you a pleasant stay on the JeTalk platform."
+        }
+    },
+
+    "notFound404": {
+        "title": "404 Error: Page not found"
+    }
 }

@@ -1,3 +1,109 @@
 {
-    "master": "Maitrisez"
+    "homePage":{
+        "bigMsg": "Maîtrisez le <1>français</1>, et l'<1>anglais</1> comme jamais auparavant",
+        "presentation": "<1>JeTalk</1>, votre assistant personnel de langues. De l'initiation à la maîtrise complète, progressez à votre rythme et en toute confiance.",
+        "buttons":{
+            "catalog": "Catalogue de fonctionnalités",
+            "signup": "S'inscrire maintenant"
+        },
+        "cards":{
+            "cmr": {
+                "title": "Le bilinguisme au cœur de notre patriotisme.",
+                "content": "Maîtrisez nos deux langues et cultures officielles, participez activement à la construction du pays et devenez un citoyen camerounais à part entière."
+            },
+            "ai":{
+                "title": "L'IA au cœur de l'apprentissage.",
+                "content": "Profitez d'une expérience complètement enrichie où l'intelligence artificielle s'adapte à votre rythme pour vous offrir un parcours unique et inédit."
+            },
+            "learning":{
+                "title": "Apprentissage personnalisé.",
+                "content": "Un parcours entièrement adapté à vos besoins et à votre rythme, conçu pour respecter vos objectifs et vos disponibilités."
+            }
+        }
+    },
+
+    "navBar":{
+        "home": "Accueil",
+        "features": "Fonctionnalités",
+        "plans": "Plans",
+        "login": "Se connecter"
+    },
+
+    "footer":{
+        "slogan": "L'assistant IA pour maîtriser le français et l'anglais.",
+        "legalTitle": "Légal",
+        "termsOfUse": "Conditions d'utilisation",
+        "privacyPolicy": "Politique de confidentialité",
+        "aboutUs": "À propos",
+        "contactUs": "Contactez-nous",
+        "usefulLinks": "Liens utiles",
+        "location": "Yaoundé, Cameroun",
+        "copyright": "© 2026 JeTalk. Tous droits réservés."
+    },
+
+    "loginPage": {
+        "title": "Connectez-vous à JeTalk",
+        "emailLabel": "Adresse email",
+        "passwordLabel": "Mot de passe",
+        "buttons": {
+            "submit": "Connexion",
+            "reset": "Réinitialiser"
+        },
+        "noAccountPrompt": "Vous n'avez pas encore de compte ?",
+        "signupLink": "Inscrivez-vous"
+    },
+
+    "signUpPage": {
+        "title": "Créez votre compte",
+        "form": {
+            "fullNameLabel": "Nom complet",
+            "emailLabel": "Adresse e-mail",
+            "passwordLabel": "Mot de passe",
+            "confirmPasswordLabel": "Confirmez le mot de passe",
+            "langLabel": "Langue à apprendre",
+            "langEnglish": "Anglais",
+            "langFrench": "Français",
+            "levelLabel": "Niveau actuel",
+            "termsAgreement": "Je confirme mon niveau de langue et j'accepte les conditions d'utilisation et la politique de confidentialité"
+        },
+        "levels": {
+            "amateur": "Amateur",
+            "intermediate": "Intermédiaire",
+            "advanced": "Avancé",
+            "expert": "Expert"
+        },
+        "errors": {
+            "passwordMinLength": "Le mot de passe doit contenir au moins 8 caractères",
+            "passwordLowercase": "Minuscule manquante !",
+            "passwordUppercase": "Majuscule manquante dans le mot de passe !",
+            "passwordSpecialChar": "Caractère spécial manquant dans le mot de passe !",
+            "passwordDigit": "Chiffre manquant dans le mot de passe",
+            "fillAllFields": "Veuillez remplir tous les champs avant de soumettre le formulaire !",
+            "passwordMismatch": "La confirmation du mot de passe et le mot de passe ne sont pas similaires"
+        },
+        "buttons": {
+            "submit": "S'inscrire",
+            "reset": "Réinitialiser"
+        },
+        "alreadyHaveAccount": "Vous avez déjà un compte ?",
+        "loginLink": "Connectez-vous",
+        "info": {
+            "title": "Inscrivez-vous sur JeTalk",
+            "intro": "Inscrivez-vous sur la plateforme JeTalk pour bénéficier de toutes les fonctionnalités que peut vous offrir notre solution. Votre inscription doit respecter les consignes suivantes :",
+            "rules": {
+                "allFieldsRequired": "Tous les champs de ce formulaire sont <1>obligatoires</1>",
+                "passwordRequirements": "Le mot de passe doit contenir au moins 8 caractères (avec des majuscules, des minuscules et des caractères spéciaux) ;",
+                "oneAccountPerEmail": "Un email ne peut créer qu'un seul compte ;",
+                "usernameMinLength": "Votre nom d'utilisateur doit avoir minimum 3 lettres ;",
+                "confirmPasswordMatch": "La confirmation du mot de passe doit correspondre au mot de passe inscrit dans le champ mot de passe ;",
+                "languageLevelAdvice": "Entrez votre niveau exact d'anglais pour permettre un suivi de qualité. Si vous ne maîtrisez pas votre niveau, inscrivez Amateur, vous pourrez passer un test pour déterminer plus précisément votre niveau ;",
+                "loginLinkAdvice": "Si vous possédez déjà un compte, vous pouvez cliquer sur le lien de connexion en bas du formulaire."
+            },
+            "thankYou": "Tout en vous remerciant de votre inscription et de la confiance que vous accordez à JeTalk, nous vous souhaitons un heureux séjour sur la plateforme JeTalk."
+        }
+    },
+
+    "notFound404": {
+        "title": "404 Erreur : Page introuvable"
+    }
 }

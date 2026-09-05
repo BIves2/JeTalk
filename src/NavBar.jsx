@@ -5,6 +5,7 @@ import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { Link } from "react-router-dom"
 import TranslationButton from "./TranslationButton"
+import { useTranslation } from "react-i18next"
 
 /**
  * Navigation bar item
@@ -13,6 +14,7 @@ import TranslationButton from "./TranslationButton"
 function NavBar({children}){
     const [isOpen, setIsOpen] = useState(false)
     const navigator = useNavigate()
+    const {t} = useTranslation()
     return(
         <div className="fixed w-full flex flex-row shadow-xl shadow-gray-500/30 top-0 z-20 bg-white">
 
@@ -29,16 +31,16 @@ function NavBar({children}){
                         setIsOpen(!isOpen)
                     }}
                 >
-                    Accueil
+                    {t("navBar.home")}
                 </Link>
                 <Link className="mr-20 font-bold cursor-pointer">
-                    Fonctionnalites
+                    {t("navBar.features")}
                 </Link>
                 <Link className="mr-20 font-bold cursor-pointer">
-                    Plan
+                    {t("navBar.plans")}
                 </Link>
                 <Link to="/login" className="mr-20 font-bold cursor-pointer text-red-700">
-                    Se Connecter
+                    {t("navBar.login")}
                 </Link>
                 <TranslationButton />
             </div>
@@ -59,16 +61,16 @@ function NavBar({children}){
                         navigator("/")
                     }}
                 >
-                    Accueil
+                    {t("navBar.home")}
                 </Link>
                 <Link className="block py-1 border-b w-full text-left font-bold">
-                    Fonctionnalites
+                    {t("navBar.features")}
                 </Link>
                 <Link className="block py-1 border-b w-full text-left font-bold">
-                    Plan
+                    {t("navBar.plans")}
                 </Link>
                 <Link className="block py-1 border-b w-full text-left text-red-700 font-bold border-black">
-                    Se Connecter
+                    {t("navBar.login")}
                 </Link>
             </div>}
 
