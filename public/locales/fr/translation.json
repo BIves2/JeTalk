@@ -105,5 +105,14 @@
 
     "notFound404": {
         "title": "404 Erreur : Page introuvable"
+    },
+
+    "userNavBar": {
+        "home": "Accueil",
+        "myActivities": "Mes activités",
+        "test": "Passer un test",
+        "conversation": "Conversation",
+        "translation": "Traduction",
+        "reporting": "Signalement"
     }
 }

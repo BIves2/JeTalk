@@ -29,7 +29,7 @@ const registration = async (req, res)=>{
     } catch (error) {
         console.error("[Error🚨] : ", error)
         res.json({
-            code: "Unknow error occurred",
+            code: "UNKNOW_ERROR",
             msg: "Erreur inconnue"
         })
     }

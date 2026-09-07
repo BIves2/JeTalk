@@ -29,13 +29,17 @@ const getUserById = async (id)=>{
 }
 
 const getUserByEmail = async (email)=>{
-    const userReturned = await prisma.utilisateur.findFirst({
+    const accountFound = await prisma.compte.findFirst({
         where: {
-            compte: {
-                email: email
-            }
+            email: email
+        },
+        include: {
+            utilisateur: true
         }
     })
-    return userReturned
+    return {
+        user: accountFound.utilisateur, 
+        account: accountFound
+    }
 }
 export {createUser, getUserById, getUserByEmail}

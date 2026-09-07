@@ -105,5 +105,14 @@
 
     "notFound404": {
         "title": "404 Error: Page not found"
+    },
+
+    "userNavBar": {
+        "home": "Home",
+        "myActivities": "My Activities",
+        "test": "Make a test",
+        "conversation": "Conversation",
+        "translation": "Translation",
+        "reporting": "Reporting"
     }
 }

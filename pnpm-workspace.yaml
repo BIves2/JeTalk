@@ -2,4 +2,5 @@ allowBuilds:
   '@prisma/engines': false
   bcrypt: false
   better-sqlite3: false
+  node-llama-cpp: false
   prisma: false
