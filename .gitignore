@@ -27,3 +27,5 @@ dist-ssr
 .antigravitycli
 
 /src/generated/prisma
+
+/public/res

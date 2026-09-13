@@ -22,8 +22,10 @@ const createUser = async (name, lang, lvl, email, password, profil=null, descrip
 } 
 
 const getUserById = async (id)=>{
+    const numericId = parseInt(id, 10)
+    if(isNaN(numericId)) return null
     const userReturned = await prisma.utilisateur.findFirst({
-        where: {id: id}
+        where: {id: numericId}
     })
     return userReturned
 }
@@ -37,6 +39,7 @@ const getUserByEmail = async (email)=>{
             utilisateur: true
         }
     })
+    if(!accountFound) return { user: null, account: null }
     return {
         user: accountFound.utilisateur, 
         account: accountFound

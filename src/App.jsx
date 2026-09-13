@@ -5,6 +5,8 @@ import SignUp from "./SignUp";
 import Login from "./Login";
 import Dashboard from "./Dashboard";
 import ProtectedRoutes from "./routes/ProtectedRoutes";
+import UserInfosContext from "./context/UserInfosContext";
+import TranslationSpace from "./TranslationSpace";
 
 /**
  * file for global app views routes
@@ -18,7 +20,10 @@ function App(){
             <Route path="/login" element={<Login />} />
             <Route path="*" element={<NotFound404 />} />
             <Route element={<ProtectedRoutes />}>
-                <Route path="/dashboard" element={<Dashboard />}/>
+                <Route element={<UserInfosContext />}>
+                    <Route path="/dashboard" element={<Dashboard />}/>
+                    <Route path="/translation" element={<TranslationSpace />}/>
+                </Route>
             </Route>
         </Routes>
     )

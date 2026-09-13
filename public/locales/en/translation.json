@@ -114,5 +114,28 @@
         "conversation": "Conversation",
         "translation": "Translation",
         "reporting": "Reporting"
+    },
+
+    "userHeader": {
+        "search": "Research on courses",
+        "student": "Student",
+        "teacher": "Teacher",
+        "admin": "Admin"
+    },
+
+    "dashboard": {
+        "title": "JeTalk - User Dashboard",
+        "welcomeMsg": "Welcome <1>{{name}}</1> !",
+        "levelComment":"Votre niveau actuel est : {{level}} (niveau {{levelNumber}}/4)",
+        "conversationCard": {
+            "title": "Discussion guidée",
+            "concept": "Lancez une discussion avec notre assistant JeTalk, et bénéficiez d'une analyse inédite de vos performances et des conseils pratiques d'amélioration",
+            "audioButton": "Lancer une discussion audio",
+            "chatButton": "Lancer un chat écrit"
+        },
+        "runCard": {
+            "title": "Ne tardons plus !",
+            "concept": "{{name}}, lance un cours tout de suite et commence ta formation avec JeTalk. Clique sur le bouton ci dessous pour commencer un cours conçu par nos enseignants spécialistes de JeTalk !"
+        }
     }
 }

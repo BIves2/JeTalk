@@ -114,5 +114,32 @@
         "conversation": "Conversation",
         "translation": "Traduction",
         "reporting": "Signalement"
+    },
+
+    "userHeader": {
+        "search": "Rechercher dans les cours",
+        "student": "Eleve",
+        "teacher": "Enseignant",
+        "admin": "Admin"
+    },
+
+    "dashboard": {
+        "title": "JeTalk - Tableau de bord",
+        "welcomeMsg": "Bonjour <1>{{name}}</1> !",
+        "levelComment":"Votre niveau actuel est : {{level}} (niveau {{levelNumber}}/4)",
+        "conversationCard": {
+            "title": "Discussion guidée",
+            "concept": "Lancez une discussion avec notre assistant JeTalk, et bénéficiez d'une analyse inédite de vos performances et des conseils pratiques d'amélioration",
+            "audioButton": "Lancer une discussion audio",
+            "chatButton": "Lancer un chat écrit"
+        },
+        "runCard": {
+            "title": "Ne tardons plus !",
+            "concept": "<1>{{name}}</1>, lance un cours tout de suite et commence ta formation avec JeTalk. Clique sur le bouton ci dessous pour commencer un cours conçu par nos enseignants spécialistes de JeTalk !"
+        }
+    },
+    "translationSpace":{
+        "title": "Traduction intelligente",
+        "concept": "Alimentée par l'intelligence artificielle pour une compréhension approfondie"
     }
 }
