@@ -2,19 +2,20 @@ import "dotenv/config"
 import prisma from "../config/db.js"
 
 const createUser = async (name, lang, lvl, email, password, profil=null, description=null)=>{
-     const userData = {
+    const compteData = {
+        email: email,
+        mot_de_passe: password
+    }
+    const userData = {
         nom : name,
         langue: lang,
         niveau: lvl,
         compte: {
-            create: {
-                email : email,
-                mot_de_passe : password,
-            }
+            create: compteData
         }
     }
-    if(profil)userData.profil = profil
-    if(description)userData.description = description
+    if(description)compteData.description = description
+    if(profil)compteData.photo_profil = profil
     const newUser = await prisma.utilisateur.create({
        data: userData
     })

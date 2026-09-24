@@ -16,7 +16,10 @@ function UserInfosContext(){
                 params: {id: user.id},
                 withCredentials: true
             })
-            setInfos(response.data.name)
+            setInfos({
+                name: response.data.name,
+                id: user.id
+            })
         }catch(err){
             setInfos(null)
         }
@@ -25,7 +28,7 @@ function UserInfosContext(){
         checkInfos()
     }, [user?.id])
     return (
-        <InfosContext.Provider value={{name: infos}}>
+        <InfosContext.Provider value={{ name: infos?.name || "", id: infos?.id || null }}>
             <Outlet />
         </InfosContext.Provider>
     )

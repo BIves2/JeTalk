@@ -17,6 +17,8 @@ model Utilisateur{
   langue String
   niveau String
   compte Compte?
+  statistiques Statistiques?
+  progressions ProgressionCours[]
 }
 
 model Compte{
@@ -27,4 +29,33 @@ model Compte{
   photo_profil String?
   id_utilisateur Int @unique
   utilisateur Utilisateur @relation(fields: [id_utilisateur], references: [id])
+}
+
+model Statistiques{
+  id Int @id @default(autoincrement())
+  points Int @default(0)
+  coursTermines Int @default(0)
+  id_utilisateur Int @unique
+  utilisateur Utilisateur @relation(fields: [id_utilisateur], references: [id])
+}
+
+model Cours{
+  id Int @id @default(autoincrement())
+  titre String
+  description String
+  contenu String 
+  niveau String 
+  langue String 
+  progressions ProgressionCours[]
+}
+
+model ProgressionCours{
+  id Int @id @default(autoincrement())
+  termine Boolean @default(false)
+  id_utilisateur Int
+  id_cours Int
+  utilisateur Utilisateur @relation(fields: [id_utilisateur], references: [id])
+  cours Cours @relation(fields: [id_cours], references: [id])
+
+  @@unique([id_utilisateur, id_cours])
 }

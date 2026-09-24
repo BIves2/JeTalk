@@ -7,6 +7,11 @@ import Dashboard from "./Dashboard";
 import ProtectedRoutes from "./routes/ProtectedRoutes";
 import UserInfosContext from "./context/UserInfosContext";
 import TranslationSpace from "./TranslationSpace";
+import ConversationSpace from "./ConversationSpace";
+import Activities from "./Activities";
+import CoursesList from "./CoursesList";
+import Statistics from "./Statistics";
+import LessonSpace from "./LessonSpace";
 
 /**
  * file for global app views routes
@@ -22,7 +27,12 @@ function App(){
             <Route element={<ProtectedRoutes />}>
                 <Route element={<UserInfosContext />}>
                     <Route path="/dashboard" element={<Dashboard />}/>
+                    <Route path="/activities" element={<Activities />}/>
+                    <Route path="/activities/courses" element={<CoursesList />}/>
+                    <Route path="/activities/statistics" element={<Statistics />}/>
+                    <Route path="/lesson/:id" element={<LessonSpace />}/>
                     <Route path="/translation" element={<TranslationSpace />}/>
+                    <Route path="/conversation" element={<ConversationSpace />}/>
                 </Route>
             </Route>
         </Routes>

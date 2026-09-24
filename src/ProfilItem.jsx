@@ -33,7 +33,7 @@ function ProfilItem({ name, profil = "", role = "student" }) {
                         <img
                             src={profil === "" ? <User /> : profil}
                             alt={name || "USER_PROFIL"}
-                            className="h-15 w-15 sm:h-11 sm:w-11 rounded-full object-cover ring-2 ring-blue-500/20"
+                            className="h-10 w-10 sm:h-11 sm:w-11 rounded-full object-cover ring-2 ring-blue-500/20"
                         />
                     ) : (
                         <div className="h-10 w-10 sm:h-11 sm:w-11 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold">

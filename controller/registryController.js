@@ -7,8 +7,8 @@ import bcrypt from "bcrypt"
 const registration = async (req, res)=>{
     try{
         const {name, lang, lvl, email, password, description, profil} = req.body
-        const userWithEmail = await getUserByEmail(email)
-        if(userWithEmail){
+        const {user, account} = await getUserByEmail(email)
+        if(user){
             console.log("[Warning⚠️ ]: Email already present on database")
             return res.status(409).json({
                 code: "EMAIL_ALREADY_EXIST",

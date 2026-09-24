@@ -69,7 +69,9 @@ function NavBar({children}){
                 <Link className="block py-1 border-b w-full text-left font-bold">
                     {t("navBar.plans")}
                 </Link>
-                <Link className="block py-1 border-b w-full text-left text-red-700 font-bold border-black">
+                <Link className="block py-1 border-b w-full text-left text-red-700 font-bold border-black"
+                    to="/login"
+                >
                     {t("navBar.login")}
                 </Link>
             </div>}

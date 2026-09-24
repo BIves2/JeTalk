@@ -2,5 +2,7 @@ allowBuilds:
   '@prisma/engines': false
   bcrypt: false
   better-sqlite3: false
+  msedge-tts: false
   node-llama-cpp: false
   prisma: false
+  protobufjs: false
