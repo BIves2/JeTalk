@@ -50,7 +50,14 @@
             "reset": "Réinitialiser"
         },
         "noAccountPrompt": "Vous n'avez pas encore de compte ?",
-        "signupLink": "Inscrivez-vous"
+        "signupLink": "Inscrivez-vous",
+        "errors": {
+            "wrongCredentials": "Mot de passe ou email incorrect, veuillez réessayer !",
+            "userNotFound": "L'utilisateur n'existe pas en base de données. Veuillez essayer avec d'autres identifiants !",
+            "serverError": "Erreur serveur. Veuillez réessayer plus tard.",
+            "networkError": "Impossible de joindre le serveur. Vérifiez votre connexion.",
+            "unknownError": "Une erreur inconnue est survenue. Veuillez réessayer."
+        }
     },
 
     "signUpPage": {
@@ -107,6 +114,13 @@
         "title": "404 Erreur : Page introuvable"
     },
 
+    "logout": {
+        "title": "Déconnexion",
+        "message": "Vous serez déconnectés dans",
+        "cancel": "Annuler",
+        "confirm": "Déconnexion"
+    },
+
     "userNavBar": {
         "home": "Accueil",
         "myActivities": "Mes activités",
@@ -138,8 +152,23 @@
             "concept": "<1>{{name}}</1>, lance un cours tout de suite et commence ta formation avec JeTalk. Clique sur le bouton ci dessous pour commencer un cours conçu par nos enseignants spécialistes de JeTalk !"
         }
     },
-    "translationSpace":{
+    "translationSpace": {
         "title": "Traduction intelligente",
-        "concept": "Alimentée par l'intelligence artificielle pour une compréhension approfondie"
+        "concept": "Alimentée par l'intelligence artificielle pour une compréhension approfondie et instantanée",
+        "sourceLabel": "Expression originale",
+        "targetLabel": "Traduction",
+        "inputPlaceholder": "Saisissez ou collez votre texte ici...",
+        "outputPlaceholder": "La traduction apparaîtra ici...",
+        "swapLanguages": "Inverser les langues",
+        "translateButton": "Traduire le texte",
+        "translating": "Traduction en cours...",
+        "copy": "Copier",
+        "copied": "Copié !",
+        "clear": "Effacer",
+        "listen": "Écouter",
+        "onlineBadge": "Mode En Ligne (Groq)",
+        "offlineBadge": "Mode Hors-Ligne (Qwen Local)",
+        "providerPrefix": "Moteur utilisé :",
+        "charsCount": "caractères"
     }
 }

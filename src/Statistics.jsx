@@ -6,11 +6,10 @@ import { useNavigate } from "react-router-dom"
 import { useTranslation } from "react-i18next"
 import { BarChart3, Loader2, ArrowLeft, CheckCircle } from "lucide-react"
 import axios from "axios"
-import { useInfos } from "./context/UserInfosContext"
+import API_URL from "./config/api"
 
 function Statistics() {
     const { t } = useTranslation()
-    const { id } = useInfos()
     const navigate = useNavigate()
     
     const [stats, setStats] = useState(null)
@@ -19,10 +18,9 @@ function Statistics() {
 
     useEffect(() => {
         const fetchStats = async () => {
-            if (!id) return
             try {
                 setLoading(true)
-                const response = await axios.get(`http://localhost:5000/user/stats?id=${id}`, {
+                const response = await axios.get(`${API_URL}/user/stats`, {
                     withCredentials: true
                 })
                 setStats(response.data)
@@ -34,7 +32,7 @@ function Statistics() {
             }
         }
         fetchStats()
-    }, [id])
+    }, [])
 
     return (
         <div className="flex flex-col min-h-screen bg-blue-50">

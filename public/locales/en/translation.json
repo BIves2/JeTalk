@@ -50,7 +50,14 @@
             "reset": "Reset"
         },
         "noAccountPrompt": "Don't have an account yet?",
-        "signupLink": "Sign up"
+        "signupLink": "Sign up",
+        "errors": {
+            "wrongCredentials": "Wrong password or email, please try again!",
+            "userNotFound": "User not found in database. Please try with other credentials!",
+            "serverError": "Server error. Please try again later.",
+            "networkError": "Cannot reach the server. Check your connection.",
+            "unknownError": "An unknown error occurred. Please try again."
+        }
     },
 
     "signUpPage": {
@@ -107,6 +114,13 @@
         "title": "404 Error: Page not found"
     },
 
+    "logout": {
+        "title": "Logout",
+        "message": "You will be logged out in",
+        "cancel": "Cancel",
+        "confirm": "Log out"
+    },
+
     "userNavBar": {
         "home": "Home",
         "myActivities": "My Activities",
@@ -137,5 +151,9 @@
             "title": "Ne tardons plus !",
             "concept": "{{name}}, lance un cours tout de suite et commence ta formation avec JeTalk. Clique sur le bouton ci dessous pour commencer un cours conçu par nos enseignants spécialistes de JeTalk !"
         }
+    },
+    "translationSpace":{
+        "title": "Traduction intelligente",
+        "concept": "Alimenté par l'intelligence artificielle pour une compréhension approfondie"
     }
 }

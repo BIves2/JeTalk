@@ -5,12 +5,11 @@ import { useLocation, useNavigate } from "react-router-dom"
 import { useTranslation } from "react-i18next"
 import { useState } from "react"
 import axios from "axios"
-import { useInfos } from "./context/UserInfosContext"
+import API_URL from "./config/api"
 import { ArrowLeft, CheckCircle, Loader2 } from "lucide-react"
 
 function LessonSpace() {
     const { t } = useTranslation()
-    const { id } = useInfos()
     const location = useLocation()
     const navigate = useNavigate()
     const lesson = location.state?.lesson
@@ -43,8 +42,7 @@ function LessonSpace() {
     const handleFinishLesson = async () => {
         try {
             setFinishing(true)
-            await axios.post("http://localhost:5000/lessons/complete", {
-                id_utilisateur: id,
+            await axios.post(`${API_URL}/lessons/complete`, {
                 id_cours: lesson.id
             }, {
                 withCredentials: true

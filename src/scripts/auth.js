@@ -1,10 +1,9 @@
 import axios from "axios";
-
-const url = "http://localhost:5000"
+import API_URL from "../config/api";
 
 async function signup(name, email, lang, lvl, password){
     try{
-        const response = await axios.post(url+'/register',{name, email, lang, lvl, password})
+        const response = await axios.post(API_URL+'/register',{name, email, lang, lvl, password})
         return response
     } catch(error) {
         if(error.response){
@@ -15,7 +14,7 @@ async function signup(name, email, lang, lvl, password){
 }
 async function verifyInfos(email, password){
     try{
-        const response = await axios.post(url+'/verifyInfos', {email, password})
+        const response = await axios.post(API_URL+'/verifyInfos', {email, password})
         return response
     } catch (error) {
         if(error.response) {

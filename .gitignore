@@ -7,12 +7,34 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+# Dépendances et build
 node_modules
+.pnpm-store
 dist
 dist-ssr
 *.local
 
-# Editor directories and files
+# Variables d'environnement (ne jamais publier)
+.env
+.env.*
+!.env.example
+
+# Base de données locale (ne jamais publier)
+database/*.db
+database/*.db-journal
+database/*.db-wal
+database/*.db-shm
+!database/.gitkeep
+
+# Fichiers générés / lourds
+/src/generated/prisma
+/public/res
+/models/*.gguf
+test_*.mp3
+coverage
+*.tmp
+
+# Éditeurs et OS
 .vscode/*
 !.vscode/extensions.json
 .idea
@@ -23,10 +45,4 @@ dist-ssr
 *.sln
 *.sw?
 *.antigravitycli
-.env
-.antigravitycli
-
-/src/generated/prisma
-
-/public/res
 .continue/

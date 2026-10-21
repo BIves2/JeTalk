@@ -19,6 +19,7 @@ model Utilisateur{
   compte Compte?
   statistiques Statistiques?
   progressions ProgressionCours[]
+  discussions Discussion[]
 }
 
 model Compte{
@@ -58,4 +59,17 @@ model ProgressionCours{
   cours Cours @relation(fields: [id_cours], references: [id])
 
   @@unique([id_utilisateur, id_cours])
+}
+
+model Discussion {
+  id              Int         @id @default(autoincrement())
+  sujet           String
+  duree           Int
+  niveau          String
+  transcription   String
+  observations    String
+  score           Int?
+  dateCreation    DateTime    @default(now())
+  id_utilisateur  Int
+  utilisateur     Utilisateur @relation(fields: [id_utilisateur], references: [id])
 }

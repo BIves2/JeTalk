@@ -1,0 +1,2 @@
+# Ce fichier permet de conserver le dossier database/ dans Git
+# sans versionner la base SQLite locale (voir .gitignore).

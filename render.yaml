@@ -1,0 +1,26 @@
+# Blueprint Render — déploiement gratuit de JeTalk + Turso.
+# Documentation : https://render.com/docs/blueprint-spec
+services:
+  - type: web
+    name: jetalk
+    runtime: node
+    plan: free
+    buildCommand: corepack enable && pnpm install --frozen-lockfile && pnpm build
+    startCommand: node server/index.js
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      # À renseigner dans le tableau de bord Render (valeurs secrètes).
+      - key: DATABASE_URL
+        sync: false
+      - key: DATABASE_AUTH_TOKEN
+        sync: false
+      - key: GROQ_API
+        sync: false
+      # Facultatif : Render fournit déjà RENDER_EXTERNAL_URL automatiquement.
+      - key: CLIENT_URL
+        sync: false
+      # Généré automatiquement par Render au premier déploiement.
+      - key: JWT_SECRET
+        generateValue: true

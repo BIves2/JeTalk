@@ -1,5 +1,9 @@
 import { Route, Routes } from "react-router-dom";
 import Home from "./Home";
+import FeaturesPage from "./FeaturesPage";
+import TermsOfUse from "./TermsOfUse";
+import PrivacyPolicy from "./PrivacyPolicy";
+import About from "./About";
 import NotFound404 from "./NotFound404";
 import SignUp from "./SignUp";
 import Login from "./Login";
@@ -21,6 +25,10 @@ function App(){
     return(
         <Routes>
             <Route path="/" element={<Home />} />
+            <Route path="/features" element={<FeaturesPage />} />
+            <Route path="/terms" element={<TermsOfUse />} />
+            <Route path="/privacy" element={<PrivacyPolicy />} />
+            <Route path="/about" element={<About />} />
             <Route path="/signup" element={<SignUp />} />
             <Route path="/login" element={<Login />} />
             <Route path="*" element={<NotFound404 />} />

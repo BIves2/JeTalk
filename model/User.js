@@ -26,7 +26,8 @@ const getUserById = async (id)=>{
     const numericId = parseInt(id, 10)
     if(isNaN(numericId)) return null
     const userReturned = await prisma.utilisateur.findFirst({
-        where: {id: numericId}
+        where: {id: numericId},
+        include: { compte: true }
     })
     return userReturned
 }

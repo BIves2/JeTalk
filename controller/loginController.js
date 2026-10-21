@@ -20,6 +20,7 @@ async function login(req, res){
                     httpOnly: true,
                     secure: process.env.NODE_ENV === 'production',
                     sameSite: true,
+                    path: "/",
                     maxAge: 60*60*1000
                 })
                 console.log("[Message✅]: User found on database")

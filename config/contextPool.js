@@ -1,4 +1,4 @@
-import { model } from "./modelInitialisation.js"
+import { getModel } from "./modelInitialisation.js"
 
 // P1: Shared context — allocated once, reused across requests.
 // Context creation is the expensive part (KV cache allocation).
@@ -13,6 +13,7 @@ let sharedContext = null
 export async function acquireContext(contextSize = 1024) {
     if (!sharedContext) {
         console.log("==> Creating shared LLM context...")
+        const model = await getModel()
         sharedContext = await model.createContext({
             contextSize,
             threads: 4

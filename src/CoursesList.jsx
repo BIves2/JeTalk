@@ -6,28 +6,25 @@ import { useNavigate } from "react-router-dom"
 import { useTranslation } from "react-i18next"
 import { BookOpen, CheckCircle, ArrowRight, Loader2, ArrowLeft } from "lucide-react"
 import axios from "axios"
-import { useInfos } from "./context/UserInfosContext"
+import API_URL from "./config/api"
 
 function CoursesList() {
     const { t } = useTranslation()
-    const { id } = useInfos()
     const navigate = useNavigate()
     
     const [lessons, setLessons] = useState([])
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState(null)
 
-    // Étape 2 & 3: Requête au SGBD pour récupérer les leçons disponibles
+    // Requête au SGBD pour récupérer les leçons disponibles
     useEffect(() => {
         const fetchLessons = async () => {
-            if (!id) return
             try {
                 setLoading(true)
-                const response = await axios.get(`http://localhost:5000/lessons?id=${id}`, {
+                const response = await axios.get(`${API_URL}/lessons`, {
                     withCredentials: true
                 })
-                // Étape 4: Le système reçoit les cours disponibles
-                setLessons(response.data)
+                setLessons(Array.isArray(response.data) ? response.data : [])
             } catch (err) {
                 console.error("Erreur lors de la récupération des leçons", err)
                 setError("Impossible de charger les leçons pour le moment.")
@@ -36,7 +33,7 @@ function CoursesList() {
             }
         }
         fetchLessons()
-    }, [id])
+    }, [])
 
     return (
         <div className="flex flex-col min-h-screen bg-blue-50">

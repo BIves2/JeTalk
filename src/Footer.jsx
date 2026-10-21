@@ -14,16 +14,16 @@ function Footer(){
 
                 <div className="flex flex-col w-80 md:w-1/4 p-5">
                     <strong>{t("footer.legalTitle")}</strong>
-                    <Link className="self-start">{t("footer.termsOfUse")}</Link>
-                    <Link className="self-start">{t("footer.privacyPolicy")}</Link>
-                    <Link className="self-start">{t("footer.aboutUs")}</Link>
+                    <Link to="/terms" className="self-start hover:text-blue-600 transition-colors">{t("footer.termsOfUse")}</Link>
+                    <Link to="/privacy" className="self-start hover:text-blue-600 transition-colors">{t("footer.privacyPolicy")}</Link>
+                    <Link to="/about" className="self-start hover:text-blue-600 transition-colors">{t("footer.aboutUs")}</Link>
                 </div>
 
                 <div className="flex flex-col w-80 md:w-1/4 p-5">
                     <strong>{t("footer.contactUs")}</strong>
-                    <Link className="self-start">ivesdebanta@gmail.com</Link>
+                    <a href="mailto:ivesdebanta@gmail.com" className="self-start hover:text-blue-600 transition-colors">ivesdebanta@gmail.com</a>
                     <p className="self-start">{t("footer.location")}</p>
-                    <Link className="self-start">{t("footer.aboutUs")}</Link>
+                    <Link to="/about" className="self-start hover:text-blue-600 transition-colors">{t("footer.aboutUs")}</Link>
                 </div>
                 <div className="flex flex-col w-80 md:w-1/4 p-5">
                     <strong>{t("footer.usefulLinks")}</strong>

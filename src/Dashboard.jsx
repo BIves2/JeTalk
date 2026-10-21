@@ -73,9 +73,9 @@ function Dashboard(){
                             {/* Zone Avatar/Micro interactive et adaptative */}
                             <div className="py-8 flex flex-row justify-around items-center gap-4">
                                 <img src={robot} alt="Robot Avatar" className="size-24 sm:size-32 md:size-40 object-contain drop-shadow-xl"/>
-                                <button className="cursor-pointer">
+                                <Link to="/conversation" className="cursor-pointer">
                                     <Mic className="bg-blue-500 size-16 sm:size-20 rounded-full p-4 hover:scale-110 hover:bg-red-600 transition-all text-white shadow-2xl shadow-black/50 active:scale-95"/>
-                                </button>
+                                </Link>
                                 <img src={human} alt="Human Avatar" className="size-24 sm:size-32 md:size-40 object-contain drop-shadow-xl"/>
                             </div>
 
@@ -84,19 +84,13 @@ function Dashboard(){
                         </div>
 
                         <div className="flex flex-col sm:flex-row justify-around gap-4 mt-4">
-                        <Link
-                                to="/conversation"
-                                className="bg-blue-900 hover:bg-blue-950 text-white py-3.5 px-6 rounded-3xl font-bold text-center transition duration-200 shadow-md flex-1 cursor-pointer"
-                        >
-                            {t("dashboard.conversationCard.audioButton")}
-                        </Link>
                             <Link
                                 to="/conversation"
-                                className="bg-yellow-600 hover:bg-yellow-700 text-white py-3.5 px-6 rounded-3xl font-bold text-center transition duration-200 shadow-md flex-1 cursor-pointer"
+                                className="bg-blue-900 hover:bg-blue-950 text-white py-3.5 px-6 rounded-3xl font-bold text-center transition duration-200 shadow-md flex-1 cursor-pointer"
                             >
-                                {t("dashboard.conversationCard.chatButton")}
+                                Lancer une discussion
                             </Link>
-            </div>
+                        </div>
                     </div>
         </div>
             </div>

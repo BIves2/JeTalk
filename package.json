@@ -1,37 +1,43 @@
 {
-	"name": "Albama",
+	"name": "jetalk",
 	"private": true,
 	"version": "0.0.0",
 	"type": "module",
+	"packageManager": "pnpm@11.8.0",
+	"engines": {
+		"node": ">=20.19.0"
+	},
 	"scripts": {
 		"dev": "vite",
+		"dev:server": "node --watch server/index.js",
 		"build": "vite build",
+		"start": "node server/index.js",
 		"lint": "eslint .",
 		"preview": "vite preview",
-		"record": "pnpm build && pnpm preview"
+		"record": "pnpm build && pnpm preview",
+		"db:generate": "prisma generate",
+		"db:push": "prisma db push",
+		"db:init": "node scripts/db-init.js",
+		"db:seed": "node seed.js",
+		"db:setup": "pnpm db:init && pnpm db:seed",
+		"postinstall": "prisma generate"
 	},
 	"dependencies": {
 		"@libsql/client": "^0.17.4",
-		"@prisma/adapter-better-sqlite3": "^7.10.0",
 		"@prisma/adapter-libsql": "^7.10.0",
 		"@prisma/client": "^7.10.0",
-		"@ricky0123/vad-react": "^0.0.36",
 		"@tailwindcss/vite": "^4.3.3",
 		"axios": "^1.19.0",
 		"bcrypt": "^6.0.0",
-		"better-sqlite3": "^13.0.3",
 		"cookie-parser": "^1.4.7",
 		"cors": "^2.8.6",
 		"dotenv": "^17.4.2",
-		"edge-tts": "^1.0.1",
 		"express": "^5.2.1",
 		"i18next": "^26.4.1",
 		"i18next-http-backend": "^4.0.2",
 		"jsonwebtoken": "^9.0.3",
 		"lucide-react": "^1.31.0",
-		"msedge-tts": "^2.0.7",
 		"node-edge-tts": "^1.2.10",
-		"node-llama-cpp": "^3.20.0",
 		"prisma": "^7.9.1",
 		"react": "^19.2.8",
 		"react-dom": "^19.2.8",
@@ -39,6 +45,9 @@
 		"react-router-dom": "^7.18.2",
 		"tailwindcss": "^4.3.3",
 		"vite": "^8.2.1"
+	},
+	"optionalDependencies": {
+		"node-llama-cpp": "^3.20.0"
 	},
 	"devDependencies": {
 		"@eslint/js": "^10.0.1",
@@ -49,7 +58,6 @@
 		"eslint-plugin-react-hooks": "^7.1.1",
 		"eslint-plugin-react-refresh": "^0.5.2",
 		"globals": "^17.6.0",
-		"vite": "^8.2.1",
-		"vite-plugin-static-copy": "^4.1.1"
+		"vite": "^8.2.1"
 	}
 }

@@ -16,7 +16,7 @@ const registration = async (req, res)=>{
             })
         }
         const hashedPassword = await bcrypt.hash(password, 10)
-        const userCreated = await createUser(name, lang, lvl, email, hashedPassword, description, profil)
+        const userCreated = await createUser(name, lang, lvl, email, hashedPassword, profil, description)
         if(userCreated){
             console.log("[Message✅]: User created successfully")
             return res.status(201).json({
