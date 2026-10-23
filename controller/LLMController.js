@@ -1,4 +1,4 @@
-import { getModel } from "../config/modelInitialisation.js"
+import { getModel, isLocalModelAvailable } from "../config/modelInitialisation.js"
 import { EdgeTTS } from "node-edge-tts"
 import fs from "node:fs"
 import path from "node:path"
@@ -20,7 +20,13 @@ const LEVEL_TO_RATE = {
 }
 
 // Modèles essayés dans l'ordre. Le premier disponible sur le compte Groq répond.
-const GROQ_MODELS = ["qwen/qwen3.8-27b", "openai/gpt-oss-20b", "openai/gpt-oss-120b"]
+// Les modèles gpt-oss sont des modèles de raisonnement : il leur faut plus de
+// jetons et un effort de raisonnement faible pour laisser de la place au texte.
+const GROQ_MODELS = [
+    { id: "qwen/qwen3.8-27b", maxTokens: 400 },
+    { id: "openai/gpt-oss-120b", maxTokens: 800, reasoningEffort: "low" },
+    { id: "openai/gpt-oss-20b", maxTokens: 800, reasoningEffort: "low" }
+]
 
 function buildMessages(systemPrompt, message, history = []) {
     return [
@@ -98,28 +104,63 @@ function buildSystemPrompt(sessionContext = {}) {
 }
 
 /**
- * Synthèse TTS d'un texte vers un buffer MP3 via EdgeTTS
+ * Synthèse TTS d'un texte vers un buffer MP3 via EdgeTTS.
+ * Edge-TTS peut échouer ponctuellement (403, connexion WebSocket coupée).
+ * On retente donc jusqu'à trois fois avant de laisser le navigateur lire le texte.
  */
 async function synthesizeSpeech(text, voice = 'fr-FR-EloiseNeural', rate = '+0%', lang = 'fr-FR') {
-    const ttsEdge = new EdgeTTS({
-        voice,
-        lang,
-        outputFormat: 'audio-24khz-48kbitrate-mono-mp3',
-        rate
-    })
-    const tempFile = path.join(os.tmpdir(), `tts_${Date.now()}_${Math.random().toString(36).substring(7)}.mp3`)
-    try {
-        await ttsEdge.ttsPromise(text, tempFile)
-        if (fs.existsSync(tempFile)) {
-            return fs.readFileSync(tempFile)
+    const maxAttempts = 3
+
+    for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+        const ttsEdge = new EdgeTTS({
+            voice,
+            lang,
+            outputFormat: 'audio-24khz-48kbitrate-mono-mp3',
+            rate
+        })
+        const tempFile = path.join(
+            os.tmpdir(),
+            `tts_${Date.now()}_${Math.random().toString(36).substring(7)}.mp3`
+        )
+
+        let timer
+        try {
+            const synthPromise = ttsEdge.ttsPromise(text, tempFile)
+            // Évite un rejet non géré si la synthèse aboutit après le délai.
+            synthPromise.catch(() => {})
+            const timeoutPromise = new Promise((_, reject) => {
+                timer = setTimeout(() => reject(new Error("Edge-TTS timeout")), 12000)
+            })
+
+            await Promise.race([synthPromise, timeoutPromise])
+
+            if (fs.existsSync(tempFile)) {
+                const audio = fs.readFileSync(tempFile)
+                if (audio.length > 0) {
+                    return audio
+                }
+            }
+            console.warn(`[Warning⚠️ Edge-TTS] Tentative ${attempt}/${maxAttempts} : fichier audio vide`)
+        } catch (err) {
+            console.warn(
+                `[Warning⚠️ Edge-TTS] Tentative ${attempt}/${maxAttempts} échouée :`,
+                err?.message || err?.error || String(err)
+            )
+        } finally {
+            clearTimeout(timer)
+            if (fs.existsSync(tempFile)) {
+                try { fs.unlinkSync(tempFile) } catch (cleanupError) {
+                    console.warn("[Warning⚠️ Edge-TTS] Nettoyage impossible :", cleanupError.message)
+                }
+            }
         }
-    } catch (err) {
-        console.error("[Error🚨 Edge-TTS sentence]:", err.message)
-    } finally {
-        if (fs.existsSync(tempFile)) {
-            try { fs.unlinkSync(tempFile) } catch (e) {}
+
+        if (attempt < maxAttempts) {
+            await new Promise(resolve => setTimeout(resolve, 500 * attempt))
         }
     }
+
+    console.error("[Error🚨 Edge-TTS] Les trois tentatives ont échoué.")
     return null
 }
 
@@ -135,36 +176,40 @@ async function generateWithGroq(systemPrompt, message, history = []) {
     const failures = []
 
     console.log("==> [Groq] Calling Groq API (text mode)...")
-    for (const modelId of GROQ_MODELS) {
+    for (const model of GROQ_MODELS) {
+        const started = Date.now()
         try {
-            console.log(`==> [Groq] Trying model: ${modelId}...`)
+            console.log(`==> [Groq] Trying model: ${model.id}...`)
+            const payload = {
+                model: model.id,
+                messages,
+                temperature: 0.7,
+                max_tokens: model.maxTokens
+            }
+            if (model.reasoningEffort) payload.reasoning_effort = model.reasoningEffort
+
             const response = await axios.post(
                 "https://api.groq.com/openai/v1/chat/completions",
-                {
-                    model: modelId,
-                    messages,
-                    temperature: 0.7,
-                    max_tokens: 300
-                },
+                payload,
                 {
                     headers: {
                         "Authorization": `Bearer ${apiKey}`,
                         "Content-Type": "application/json"
                     },
-                    timeout: 30000
+                    timeout: 15000
                 }
             )
 
             const reply = response.data?.choices?.[0]?.message?.content?.trim()
             if (reply) {
-                console.log(`[Message✅]: Groq text response received with ${modelId}`)
+                console.log(`[Message✅]: Groq text response received with ${model.id} (${Date.now() - started} ms)`)
                 return reply
             }
-            failures.push(`${modelId}: réponse vide`)
+            failures.push(`${model.id}: réponse vide`)
         } catch (apiError) {
             const detail = apiError.response?.data?.error?.message || apiError.message
-            failures.push(`${modelId}: ${detail}`)
-            console.warn(`[Warning⚠️ Groq Model ${modelId} failed]:`, detail)
+            failures.push(`${model.id}: ${detail}`)
+            console.warn(`[Warning⚠️ Groq Model ${model.id} failed]:`, detail)
         }
     }
 
@@ -279,28 +324,87 @@ async function modelTest(req, res) {
         return res.send(audioBuffer)
     } catch (error) {
         console.error("[Error🚨]: on model Controller", error)
-        const localModelMissing = /Modèle local indisponible/.test(error.message || "")
-        return res.status(localModelMissing ? 503 : 500).json({
-            code: localModelMissing ? "AI_UNAVAILABLE" : "AI_ERROR",
-            error: localModelMissing
-                ? "Le service de conversation est momentanément indisponible. Réessayez plus tard."
-                : "Une erreur est survenue lors de la génération."
-        })
+        const publicError = getPublicError(error)
+        return res.status(publicError.status).json(publicError.body)
     }
 }
 
 async function generateReply(systemPrompt, message, history = [], isOnline) {
-    if (isOnline !== false && process.env.GROQ_API) {
+    if (isOnline !== false) {
+        if (!process.env.GROQ_API) {
+            if (isLocalModelAvailable()) {
+                console.log("==> GROQ_API absente, utilisation du modèle local")
+                return generateWithQwenStreaming(systemPrompt, message, history, async () => {})
+            }
+            const error = new Error("La clé GROQ_API n'est pas configurée sur le serveur.")
+            error.code = "GROQ_NOT_CONFIGURED"
+            throw error
+        }
+
         try {
             return await generateWithGroq(systemPrompt, message, history)
         } catch (groqError) {
-            console.warn("[Warning⚠️]: Groq text failed, falling back to Qwen:", groqError.message)
+            console.warn("[Warning⚠️]: Groq text failed:", groqError.message)
+            if (isLocalModelAvailable()) {
+                console.log("==> Groq indisponible, utilisation du modèle local")
+                return generateWithQwenStreaming(systemPrompt, message, history, async () => {})
+            }
+            const error = new Error("Groq est indisponible et le modèle local n'est pas installé.")
+            error.code = "GROQ_UNAVAILABLE"
+            error.detail = groqError.message
+            throw error
         }
-    } else {
-        console.log("==> Running offline with local Qwen model")
     }
 
+    console.log("==> Running offline with local Qwen model")
+    if (!isLocalModelAvailable()) {
+        const error = new Error("Le modèle local n'est pas installé sur ce serveur.")
+        error.code = "LOCAL_MODEL_UNAVAILABLE"
+        throw error
+    }
     return generateWithQwenStreaming(systemPrompt, message, history, async () => {})
+}
+
+function getPublicError(error) {
+    const detail = String(error?.detail || error?.message || "").slice(0, 500)
+    switch (error?.code) {
+        case "GROQ_NOT_CONFIGURED":
+            return {
+                status: 503,
+                body: {
+                    code: error.code,
+                    error: "Le service de conversation n'est pas encore configuré. Contactez l'administrateur.",
+                    detail
+                }
+            }
+        case "GROQ_UNAVAILABLE":
+            return {
+                status: 503,
+                body: {
+                    code: error.code,
+                    error: "Le service de conversation est momentanément indisponible. Réessayez dans quelques instants.",
+                    detail
+                }
+            }
+        case "LOCAL_MODEL_UNAVAILABLE":
+            return {
+                status: 503,
+                body: {
+                    code: error.code,
+                    error: "Le service de conversation est momentanément indisponible. Réessayez plus tard.",
+                    detail
+                }
+            }
+        default:
+            return {
+                status: 500,
+                body: {
+                    code: "AI_ERROR",
+                    error: "Une erreur est survenue lors de la génération.",
+                    detail
+                }
+            }
+    }
 }
 
 /**
@@ -334,13 +438,8 @@ export async function modelText(req, res) {
         return res.json({ reply: reply.trim() })
     } catch (error) {
         console.error("[Error🚨]: on modelText Controller", error)
-        const localModelMissing = /Modèle local indisponible/.test(error.message || "")
-        return res.status(localModelMissing ? 503 : 500).json({
-            code: localModelMissing ? "AI_UNAVAILABLE" : "AI_ERROR",
-            error: localModelMissing
-                ? "Le service de conversation est momentanément indisponible. Réessayez plus tard."
-                : "Une erreur est survenue lors de la génération."
-        })
+        const publicError = getPublicError(error)
+        return res.status(publicError.status).json(publicError.body)
     }
 }
 

@@ -72,6 +72,20 @@ function speakWithBrowser(text, langue, niveau) {
     })
 }
 
+/**
+ * Extrait le message JSON renvoyé par l'API, même quand Axios rejette la requête.
+ */
+function extractApiError(error) {
+    const data = error?.response?.data
+    if (!data) return null
+    try {
+        const text = typeof data === "string" ? data : new TextDecoder().decode(data)
+        return JSON.parse(text)
+    } catch {
+        return null
+    }
+}
+
 // ─── Étape 2, 3, 4 : Formulaire de configuration de la discussion ─────────────
 function SessionForm({ onStart, userNiveau, userLangue }) {
     const [subject, setSubject] = useState("")
@@ -481,12 +495,15 @@ function ConversationSpace() {
                 throw new Error("Le serveur n'a renvoyé aucun audio.")
             }
         } catch (err) {
-            console.error("[Error🚨 Sending to backend]:", err)
+            const apiError = extractApiError(err)
+            console.error("[Error🚨 Sending to backend]:", apiError?.detail || err)
+            if (apiError?.detail) console.warn("[AI detail]:", apiError.detail)
             setAssistantReply("")
             setIsProcessing(false)
             stopListening()
             setErrorMessage(
-                "L'assistant n'a pas pu répondre. Vérifiez votre connexion, puis cliquez sur « Réessayer »."
+                apiError?.error
+                || "L'assistant n'a pas pu répondre. Vérifiez votre connexion, puis cliquez sur « Réessayer »."
             )
         }
     }

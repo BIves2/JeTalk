@@ -6,6 +6,7 @@ import path from "node:path"
 import fs from "node:fs"
 import { fileURLToPath } from "node:url"
 import UserRoutes from "../routes/UserRoutes.js"
+import { isLocalModelAvailable } from "../config/modelInitialisation.js"
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const app = express()
@@ -48,7 +49,14 @@ app.use((_req, res, next) => {
 })
 
 app.get("/api/health", (_req, res) => {
-    res.json({ status: "ok", uptime: process.uptime() })
+    res.json({
+        status: "ok",
+        uptime: process.uptime(),
+        commit: process.env.RENDER_GIT_COMMIT || process.env.GIT_COMMIT || null,
+        branch: process.env.RENDER_GIT_BRANCH || null,
+        groqConfigured: Boolean(process.env.GROQ_API),
+        localModelAvailable: isLocalModelAvailable()
+    })
 })
 
 app.use("/", UserRoutes)

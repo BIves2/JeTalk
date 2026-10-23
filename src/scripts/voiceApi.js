@@ -14,7 +14,7 @@ export const voiceApi = {
         }, {
             responseType: 'arraybuffer',
             withCredentials: true,
-            timeout: 60000
+            timeout: 90000
         })
         return {
             data: response.data,
