@@ -18,6 +18,7 @@
 		"db:generate": "prisma generate",
 		"db:push": "prisma db push",
 		"db:init": "node scripts/db-init.js",
+		"db:check": "node scripts/db-check.js",
 		"db:seed": "node seed.js",
 		"db:setup": "pnpm db:init && pnpm db:seed",
 		"postinstall": "prisma generate"

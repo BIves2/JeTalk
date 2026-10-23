@@ -5,7 +5,7 @@ services:
     name: jetalk
     runtime: node
     plan: free
-    buildCommand: corepack enable && pnpm install --frozen-lockfile && pnpm build
+    buildCommand: corepack enable && pnpm install --frozen-lockfile && pnpm build && pnpm db:init && pnpm db:seed
     startCommand: node server/index.js
     healthCheckPath: /api/health
     envVars:

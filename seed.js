@@ -6,8 +6,14 @@ async function main() {
 
   // Vérifier s'il y a déjà des cours
   const existingCourses = await prisma.cours.findMany()
+  const force = process.argv.includes("--force")
   if (existingCourses.length > 0) {
-    console.log("Des cours existent déjà. Suppression des anciens cours...")
+    if (!force) {
+      console.log(`Des cours existent déjà (${existingCourses.length}). Seed ignoré.`)
+      console.log("Utilisez `pnpm db:seed -- --force` pour les remplacer.")
+      return
+    }
+    console.log("Suppression des anciens cours (--force)...")
     await prisma.progressionCours.deleteMany()
     await prisma.cours.deleteMany()
   }

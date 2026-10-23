@@ -59,7 +59,7 @@ pnpm db:init
 pnpm db:seed
 ```
 
-> `pnpm db:seed` remplace les cours existants. Ne l'exécutez pas sur une base contenant des données que vous voulez conserver.
+> `pnpm db:seed` ignore les cours s'ils existent déjà. Pour les remplacer, utilisez `pnpm db:seed -- --force`.
 
 ---
 
@@ -67,7 +67,7 @@ pnpm db:seed
 
 | Variable | Obligatoire | Description |
 | --- | --- | --- |
-| `DATABASE_URL` | Oui | `file:./database/dev.db` en local, ou l'URL `libsql://...` de Turso en production |
+| `DATABASE_URL` | Oui | `file:./database/dev.db` en local, ou l'URL Turso (`libsql://...` ou `turso://...`) en production |
 | `DATABASE_AUTH_TOKEN` | En production | Jeton d'accès Turso |
 | `JWT_SECRET` | Oui | Chaîne aléatoire longue servant à signer les sessions |
 | `GROQ_API` | Recommandé | Clé API Groq pour la traduction et les conversations |
@@ -119,7 +119,9 @@ Le serveur Express sert à la fois l'API et le build React sur <http://localhost
 | `pnpm build` | Génère le build de production dans `dist/` |
 | `pnpm start` | Démarre Express et sert `dist/` + l'API |
 | `pnpm db:init` | Crée les tables (local ou Turso), sans supprimer les données |
-| `pnpm db:seed` | Insère les cours de démonstration |
+| `pnpm db:check` | Diagnostique la connexion à Turso (DNS, HTTPS, SQL) |
+| `pnpm db:seed` | Insère les cours de démonstration (ignore la base si des cours existent déjà) |
+| `pnpm db:seed -- --force` | Remplace les cours existants |
 | `pnpm db:push` | Synchronise le schéma Prisma avec la base locale |
 | `pnpm db:generate` | Régénère le client Prisma |
 | `pnpm lint` | Vérifie le code avec ESLint |
@@ -154,10 +156,12 @@ git push -u origin main
 
 1. Créez un compte sur <https://turso.tech>.
 2. Créez une base nommée `jetalk` (choisissez la région la plus proche de vos utilisateurs).
-3. Copiez son **URL** : `libsql://jetalk-....turso.io`.
+3. Copiez son **URL** : `libsql://jetalk-....turso.io` (ou `turso://...`).
 4. Créez un **token** d'accès pour cette base et copiez-le.
 
-Initialisez le schéma et les cours depuis votre machine, en pointant temporairement vers Turso.
+**L'initialisation est automatique sur Render.** Le build Render exécute `pnpm db:init` puis `pnpm db:seed` : les tables sont créées et les cours ajoutés au premier déploiement.
+
+Vous pouvez aussi initialiser Turso depuis votre machine (facultatif) :
 
 **PowerShell :**
 
@@ -182,7 +186,9 @@ DATABASE_AUTH_TOKEN="votre-token-turso" \
 pnpm db:seed
 ```
 
-> L'offre gratuite Render ne donne pas accès à un shell : l'initialisation de Turso se fait donc depuis votre machine, avant le déploiement.
+> **Erreur `fetch failed` ?** Cela signifie que votre réseau local ne parvient pas à joindre Turso (pare-feu, VPN, DNS ou IPv6). Lancez `pnpm db:check` pour identifier la cause. Ce n'est pas bloquant : **ignorez l'initialisation locale et laissez Render le faire au déploiement**. L'offre gratuite Render n'a pas de shell, mais son build a accès à Turso.
+
+> `pnpm db:seed` ne remplace plus les cours existants. Pour les réinitialiser : `pnpm db:seed -- --force`.
 
 ### Étape 3 — Déployer sur Render
 
@@ -201,7 +207,7 @@ pnpm db:seed
 
 1. **New → Web Service** → sélectionnez le dépôt.
 2. Runtime : **Node**
-3. Build Command : `corepack enable && pnpm install --frozen-lockfile && pnpm build`
+3. Build Command : `corepack enable && pnpm install --frozen-lockfile && pnpm build && pnpm db:init && pnpm db:seed`
 4. Start Command : `node server/index.js`
 5. Plan : **Free**
 6. Health Check Path : `/api/health`
@@ -235,12 +241,13 @@ Chaque `git push` sur `main` redéploie automatiquement le service Render.
 | Problème | Solution |
 | --- | --- |
 | `pnpm` bloqué sous PowerShell | Utilisez `pnpm.cmd` |
+| `fetch failed` pendant `pnpm db:init` | Votre réseau local ne joint pas Turso. Lancez `pnpm db:check`, désactivez VPN/pare-feu, ou laissez Render initialiser la base au déploiement |
 | Erreur CORS | Ajoutez l'URL exacte du frontend dans `CLIENT_URL` |
 | Les pages `/terms`, `/privacy`, `/about` renvoient 404 en production | Vérifiez que le build est bien lancé avec `pnpm start` (Express sert `dist/` et le fallback SPA) |
 | Erreur 401 / session perdue | Vérifiez `JWT_SECRET`, puis reconnectez-vous |
 | Traduction ou conversation indisponible (503) | Vérifiez `GROQ_API` ; le modèle local n'est pas déployé |
 | Build Render très long | `node-llama-cpp` est volumineux ; le modèle Qwen n'est pas téléchargé, seul le paquet l'est |
-| Base vide après déploiement | Relancez `pnpm db:init` puis `pnpm db:seed` avec les variables Turso |
+| Base vide après déploiement | Le build Render exécute `db:init` et `db:seed`. Vérifiez les logs du build et les variables `DATABASE_URL` / `DATABASE_AUTH_TOKEN` |
 
 ---
 
