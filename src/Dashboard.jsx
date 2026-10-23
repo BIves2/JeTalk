@@ -7,8 +7,8 @@ import { useInfos } from "./context/UserInfosContext"
 import { useState } from "react"
 import { Link } from "react-router-dom"
 import { Mic, Activity } from "lucide-react"
-import human from "../src/assets/human.png"
-import robot from "..//src/assets/robot.png"
+import human from "./assets/Human.png"
+import robot from "./assets/Robot.png"
 
 function Dashboard(){
     const {t} = useTranslation()
