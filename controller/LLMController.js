@@ -19,6 +19,20 @@ const LEVEL_TO_RATE = {
     Expert: "+25%"
 }
 
+// Modèles essayés dans l'ordre. Le premier disponible sur le compte Groq répond.
+const GROQ_MODELS = ["qwen/qwen3.8-27b", "openai/gpt-oss-20b", "openai/gpt-oss-120b"]
+
+function buildMessages(systemPrompt, message, history = []) {
+    return [
+        { role: "system", content: systemPrompt },
+        ...history.map(h => ({
+            role: h.role === "assistant" ? "assistant" : "user",
+            content: h.content
+        })),
+        { role: "user", content: message }
+    ]
+}
+
 /**
  * Construit un system prompt dynamique selon le contexte de session
  */
@@ -84,18 +98,9 @@ function buildSystemPrompt(sessionContext = {}) {
 }
 
 /**
- * Découpe un texte en phrases complètes pour le streaming TTS
- * Retourne un tableau de phrases non vides
+ * Synthèse TTS d'un texte vers un buffer MP3 via EdgeTTS
  */
-function splitIntoSentences(text) {
-    const raw = text.split(/(?<=[.!?])\s+/)
-    return raw.map(s => s.trim()).filter(s => s.length > 2)
-}
-
-/**
- * Synthèse TTS d'une phrase vers un buffer MP3 via EdgeTTS
- */
-async function synthesizeSentence(text, voice = 'fr-FR-EloiseNeural', rate = '+0%', lang = 'fr-FR') {
+async function synthesizeSpeech(text, voice = 'fr-FR-EloiseNeural', rate = '+0%', lang = 'fr-FR') {
     const ttsEdge = new EdgeTTS({
         voice,
         lang,
@@ -119,103 +124,51 @@ async function synthesizeSentence(text, voice = 'fr-FR-EloiseNeural', rate = '+0
 }
 
 /**
- * Génération de texte via l'API Groq (en ligne) — mode streaming
- * Retourne le texte complet phrase par phrase via onSentence callback
+ * Génération de texte via Groq sans streaming.
+ * La réponse est ensuite synthétisée en audio ou renvoyée au client.
  */
-async function generateWithGroqStreaming(systemPrompt, message, history = [], onSentence) {
+async function generateWithGroq(systemPrompt, message, history = []) {
     const apiKey = process.env.GROQ_API
     if (!apiKey) throw new Error("GROQ_API key is not configured in .env")
 
-    console.log("==> [Groq] Calling Groq API with streaming...")
-    const messages = [
-        { role: "system", content: systemPrompt },
-        ...history.map(h => ({
-            role: h.role === "assistant" ? "assistant" : "user",
-            content: h.content
-        })),
-        { role: "user", content: message }
-    ]
+    const messages = buildMessages(systemPrompt, message, history)
+    const failures = []
 
-    const groqCandidateModels = ["qwen/qwen3.8-27b", "openai/gpt-oss-20b", "openai/gpt-oss-120b"]
-
-    for (const modelId of groqCandidateModels) {
+    console.log("==> [Groq] Calling Groq API (text mode)...")
+    for (const modelId of GROQ_MODELS) {
         try {
-            console.log(`==> [Groq] Trying model: ${modelId} (streaming)...`)
-
+            console.log(`==> [Groq] Trying model: ${modelId}...`)
             const response = await axios.post(
                 "https://api.groq.com/openai/v1/chat/completions",
                 {
                     model: modelId,
                     messages,
                     temperature: 0.7,
-                    max_tokens: 300,
-                    stream: true
+                    max_tokens: 300
                 },
                 {
                     headers: {
                         "Authorization": `Bearer ${apiKey}`,
-                        "Content-Type": "application/json",
-                        "Accept": "text/event-stream"
+                        "Content-Type": "application/json"
                     },
-                    responseType: "stream",
                     timeout: 30000
                 }
             )
 
-            let buffer = ""
-            let fullText = ""
-
-            return await new Promise((resolve, reject) => {
-                response.data.on("data", async (chunk) => {
-                    const lines = chunk.toString().split("\n")
-                    for (const line of lines) {
-                        if (!line.startsWith("data: ")) continue
-                        const data = line.slice(6).trim()
-                        if (data === "[DONE]") continue
-                        try {
-                            const parsed = JSON.parse(data)
-                            const token = parsed.choices?.[0]?.delta?.content || ""
-                            buffer += token
-                            fullText += token
-
-                            // Dès qu'on a une phrase complète, on la synthétise
-                            const sentenceMatch = buffer.match(/^(.*[.!?])\s*([\s\S]*)$/)
-                            if (sentenceMatch) {
-                                const sentence = sentenceMatch[1].trim()
-                                buffer = sentenceMatch[2]
-                                if (sentence.length > 2) {
-                                    console.log(`==> [Stream] Sentence ready: "${sentence}"`)
-                                    await onSentence(sentence)
-                                }
-                            }
-                        } catch (e) {
-                            // Chunk JSON incomplet, on ignore
-                        }
-                    }
-                })
-
-                response.data.on("end", async () => {
-                    // Synthétiser le reste du buffer si non vide
-                    const remaining = buffer.trim()
-                    if (remaining.length > 2) {
-                        console.log(`==> [Stream] Remaining buffer: "${remaining}"`)
-                        await onSentence(remaining)
-                    }
-                    console.log(`[Message✅]: Groq streaming done with ${modelId}`)
-                    resolve(fullText)
-                })
-
-                response.data.on("error", (err) => {
-                    reject(err)
-                })
-            })
-
+            const reply = response.data?.choices?.[0]?.message?.content?.trim()
+            if (reply) {
+                console.log(`[Message✅]: Groq text response received with ${modelId}`)
+                return reply
+            }
+            failures.push(`${modelId}: réponse vide`)
         } catch (apiError) {
-            console.warn(`[Warning⚠️ Groq Model ${modelId} failed]:`, apiError.response?.data?.error?.message || apiError.message)
+            const detail = apiError.response?.data?.error?.message || apiError.message
+            failures.push(`${modelId}: ${detail}`)
+            console.warn(`[Warning⚠️ Groq Model ${modelId} failed]:`, detail)
         }
     }
 
-    throw new Error("Aucun modèle Groq n'a pu répondre.")
+    throw new Error(`Aucun modèle Groq n'a pu répondre. ${failures.join(" | ")}`)
 }
 
 /**
@@ -285,7 +238,6 @@ async function modelTest(req, res) {
     }
 
     // Enrichissement du contexte avec les données utilisateur (depuis le token JWT)
-    const userId = req.user?.id
     const enrichedContext = {
         ...sessionContext,
         userName: sessionContext.userName || req.user?.nom || null,
@@ -301,47 +253,94 @@ async function modelTest(req, res) {
     console.log(`==> Mode: ${isOnline ? "Online (Groq)" : "Offline (Qwen)"}, Subject: "${enrichedContext.subject}", Langue: ${enrichedContext.langue || "Français"}, Level: ${enrichedContext.niveau}, Voice: ${ttsVoice}, Rate: ${ttsRate}`)
     console.log("==> System prompt built for user:", enrichedContext.userName)
 
-    // Header audio uniquement — le CORS est géré par le middleware Express
-    res.setHeader('Content-Type', 'audio/mpeg')
-
-    /**
-     * Callback appelé pour chaque phrase générée :
-     * synthétise et envoie le chunk audio immédiatement au client
-     */
-    const onSentence = async (sentence) => {
-        const audioBuffer = await synthesizeSentence(sentence, ttsVoice, ttsRate, ttsLang)
-        if (audioBuffer && audioBuffer.length > 0) {
-            console.log(`==> [TTS] Streaming ${audioBuffer.length} bytes for: "${sentence}"`)
-            res.write(audioBuffer)
-        }
-    }
-
     try {
-        if (isOnline !== false && process.env.GROQ_API) {
-            try {
-                await generateWithGroqStreaming(systemPrompt, message, history, onSentence)
-            } catch (groqErr) {
-                console.warn("[Warning⚠️]: Groq streaming failed, falling back to Qwen:", groqErr.message)
-                await generateWithQwenStreaming(systemPrompt, message, history, onSentence)
-            }
-        } else {
-            console.log("==> Running offline with local Qwen model")
-            await generateWithQwenStreaming(systemPrompt, message, history, onSentence)
+        // 1. Générer la réponse complète. La synthèse d'un seul bloc donne
+        // une prosodie plus naturelle qu'un assemblage de phrases séparées.
+        const reply = await generateReply(systemPrompt, message, history, isOnline)
+        if (!reply || !reply.trim()) {
+            throw new Error("Le modèle a renvoyé une réponse vide.")
+        }
+        const cleanReply = reply.trim()
+        console.log(`[Message✅]: Assistant reply generated (${cleanReply.length} chars)`)
+
+        // 2. Synthétiser la réponse avec Edge-TTS (voix naturelle).
+        const audioBuffer = await synthesizeSpeech(cleanReply, ttsVoice, ttsRate, ttsLang)
+
+        if (!audioBuffer || audioBuffer.length === 0) {
+            // Secours : le client lira le texte avec la voix du navigateur.
+            console.warn("[Warning⚠️]: Edge-TTS indisponible, renvoi du texte au client.")
+            return res.json({ reply: cleanReply, tts: false, code: "TTS_FALLBACK" })
         }
 
-        console.log("[Message✅]: Treat ended (streaming complete)")
+        console.log(`[Message✅]: Edge-TTS audio generated (${audioBuffer.length} bytes)`)
+        res.setHeader("Content-Type", "audio/mpeg")
+        res.setHeader("Content-Length", audioBuffer.length)
+        res.setHeader("X-JeTalk-TTS", "edge")
+        return res.send(audioBuffer)
     } catch (error) {
         console.error("[Error🚨]: on model Controller", error)
-        if (!res.headersSent) {
-            const localModelMissing = /Modèle local indisponible/.test(error.message || "")
-            res.status(localModelMissing ? 503 : 500).json({
-                error: localModelMissing
-                    ? "Le service de conversation est momentanément indisponible. Réessayez plus tard."
-                    : "Une erreur est survenue lors de la génération."
-            })
+        const localModelMissing = /Modèle local indisponible/.test(error.message || "")
+        return res.status(localModelMissing ? 503 : 500).json({
+            code: localModelMissing ? "AI_UNAVAILABLE" : "AI_ERROR",
+            error: localModelMissing
+                ? "Le service de conversation est momentanément indisponible. Réessayez plus tard."
+                : "Une erreur est survenue lors de la génération."
+        })
+    }
+}
+
+async function generateReply(systemPrompt, message, history = [], isOnline) {
+    if (isOnline !== false && process.env.GROQ_API) {
+        try {
+            return await generateWithGroq(systemPrompt, message, history)
+        } catch (groqError) {
+            console.warn("[Warning⚠️]: Groq text failed, falling back to Qwen:", groqError.message)
         }
-    } finally {
-        res.end()
+    } else {
+        console.log("==> Running offline with local Qwen model")
+    }
+
+    return generateWithQwenStreaming(systemPrompt, message, history, async () => {})
+}
+
+/**
+ * Réponse texte de l'assistant, sans synthèse vocale.
+ * Utile pour les clients qui préfèrent lire la réponse ou pour un diagnostic.
+ */
+export async function modelText(req, res) {
+    if (req.method !== "POST") {
+        return res.status(405).json({ error: "Méthode non autorisée. Utilisez POST." })
+    }
+
+    const { message, history = [], isOnline, sessionContext = {} } = req.body
+    if (!message || !String(message).trim()) {
+        return res.status(400).json({ error: "Le champ 'message' est obligatoire." })
+    }
+
+    const enrichedContext = {
+        ...sessionContext,
+        userName: sessionContext.userName || req.user?.nom || null,
+        userDescription: sessionContext.userDescription || null
+    }
+    const systemPrompt = buildSystemPrompt(enrichedContext)
+
+    console.log(`==> [Text] Mode: ${isOnline === false ? "Offline (Qwen)" : "Online (Groq)"}, Langue: ${enrichedContext.langue || "Français"}, Niveau: ${enrichedContext.niveau || "Amateur"}`)
+
+    try {
+        const reply = await generateReply(systemPrompt, String(message).trim(), history, isOnline)
+        if (!reply || !reply.trim()) {
+            throw new Error("Le modèle a renvoyé une réponse vide.")
+        }
+        return res.json({ reply: reply.trim() })
+    } catch (error) {
+        console.error("[Error🚨]: on modelText Controller", error)
+        const localModelMissing = /Modèle local indisponible/.test(error.message || "")
+        return res.status(localModelMissing ? 503 : 500).json({
+            code: localModelMissing ? "AI_UNAVAILABLE" : "AI_ERROR",
+            error: localModelMissing
+                ? "Le service de conversation est momentanément indisponible. Réessayez plus tard."
+                : "Une erreur est survenue lors de la génération."
+        })
     }
 }
 

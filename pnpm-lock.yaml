@@ -51,8 +51,8 @@ importers:
         specifier: ^1.31.0
         version: 1.31.0(react@19.2.8)
       node-edge-tts:
-        specifier: ^1.2.10
-        version: 1.2.10
+        specifier: ^1.2.11
+        version: 1.2.11
       prisma:
         specifier: ^7.9.1
         version: 7.9.1(@types/react-dom@19.2.5(@types/react@19.2.18))(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
@@ -2046,8 +2046,8 @@ packages:
   node-api-headers@1.9.0:
     resolution: {integrity: sha512-2oNILP4jXwRB4ywnYKjVk1YyJ96n2D4EOVJO6S3oYZ5PtbJrw3Yt9TpAuX3nBLMuzn74rnfGQrv13pS9vC+YiA==}
 
-  node-edge-tts@1.2.10:
-    resolution: {integrity: sha512-bV2i4XU54D45+US0Zm1HcJRkifuB3W438dWyuJEHLQdKxnuqlI1kim2MOvR6Q3XUQZvfF9PoDyR1Rt7aeXhPdQ==}
+  node-edge-tts@1.2.11:
+    resolution: {integrity: sha512-u+sekYUq+Y0JbNt12tOAK3J+iwT8NaGGbIdx2dtX+n7QSXT5YGCIUqZL58UK4YbpvpRjKI0PtQFwDKwcs1uC/A==}
     hasBin: true
 
   node-gyp-build@4.8.4:
@@ -4494,7 +4494,7 @@ snapshots:
   node-api-headers@1.9.0:
     optional: true
 
-  node-edge-tts@1.2.10:
+  node-edge-tts@1.2.11:
     dependencies:
       https-proxy-agent: 7.0.6
       ws: 8.21.3

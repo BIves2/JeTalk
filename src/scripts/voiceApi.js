@@ -13,7 +13,25 @@ export const voiceApi = {
             sessionContext  // { subject, duration, niveau, userName, userDescription }
         }, {
             responseType: 'arraybuffer',
-            withCredentials: true
+            withCredentials: true,
+            timeout: 60000
+        })
+        return {
+            data: response.data,
+            contentType: String(response.headers?.['content-type'] || '').toLowerCase()
+        }
+    },
+
+    async sendTextMessage(message, history = [], sessionContext = {}) {
+        const isOnline = typeof navigator !== 'undefined' ? navigator.onLine : true
+        const response = await axios.post(`${baseUrl}/modelText`, {
+            message,
+            history,
+            isOnline,
+            sessionContext
+        }, {
+            withCredentials: true,
+            timeout: 45000
         })
         return response.data
     },

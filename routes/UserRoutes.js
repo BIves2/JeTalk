@@ -2,7 +2,7 @@ import express from "express"
 import { registration, verifyInfos } from "../controller/registryController.js"
 import login from "../controller/loginController.js"
 import verifyToken from "../server/middlewares/verifyToken.js"
-import modelTest from "../controller/LLMController.js"
+import modelTest, { modelText } from "../controller/LLMController.js"
 import { getUserInfos, getUserStats } from "../controller/userInfosController.js"
 import TranslationController from "../controller/TranslationController.js"
 import { getAvailableLessons, completeLesson } from "../controller/LessonController.js"
@@ -22,6 +22,7 @@ UserRoutes.post("/logout", (req, res) => {
     res.json({code: "LOGGED_OUT", msg: "Déconnexion réussie"})
 })
 UserRoutes.post("/modelT", verifyToken, modelTest)
+UserRoutes.post("/modelText", verifyToken, modelText)
 UserRoutes.get("/api/me", verifyToken, (req, res) => {
     res.json({user: req.user})
 })

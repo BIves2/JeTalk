@@ -23,6 +23,55 @@ const LEVELS = [
 // Session times available
 const DURATIONS = [5, 10, 15, 20, 30]
 
+// Débit de la voix navigateur, utilisé uniquement si Edge-TTS est indisponible.
+const BROWSER_TTS_RATE = {
+    Amateur: 0.8,
+    Intermediaire: 1,
+    Avance: 1.15,
+    Expert: 1.25
+}
+
+/**
+ * Lit un texte avec la voix du navigateur.
+ * Ce secours évite un silence total si le service Edge-TTS est bloqué.
+ */
+function speakWithBrowser(text, langue, niveau) {
+    return new Promise((resolve) => {
+        if (typeof window === "undefined" || !window.speechSynthesis || !window.SpeechSynthesisUtterance) {
+            resolve()
+            return
+        }
+
+        const utterance = new window.SpeechSynthesisUtterance(text)
+        utterance.lang = langue === "Anglais" ? "en-US" : "fr-FR"
+        utterance.rate = BROWSER_TTS_RATE[niveau] || 1
+
+        const voices = window.speechSynthesis.getVoices()
+        const matchingVoice = voices.find(v => v.lang === utterance.lang)
+            || voices.find(v => v.lang?.startsWith(utterance.lang.split("-")[0]))
+        if (matchingVoice) utterance.voice = matchingVoice
+
+        let finished = false
+        let safetyTimer = null
+        const finish = () => {
+            if (finished) return
+            finished = true
+            if (safetyTimer) clearTimeout(safetyTimer)
+            resolve()
+        }
+
+        utterance.onend = finish
+        utterance.onerror = (event) => {
+            console.warn("==> Browser TTS error:", event.error)
+            finish()
+        }
+
+        safetyTimer = setTimeout(finish, Math.max(8000, Math.min(60000, text.length * 120)))
+        window.speechSynthesis.cancel()
+        window.speechSynthesis.speak(utterance)
+    })
+}
+
 // ─── Étape 2, 3, 4 : Formulaire de configuration de la discussion ─────────────
 function SessionForm({ onStart, userNiveau, userLangue }) {
     const [subject, setSubject] = useState("")
@@ -217,6 +266,7 @@ function ConversationSpace() {
     const [isListening, setIsListening] = useState(false)
     const [isProcessing, setIsProcessing] = useState(false)
     const [liveTranscript, setLiveTranscript] = useState("")
+    const [assistantReply, setAssistantReply] = useState("")
     const [chatHistory, setChatHistory] = useState([])
     const [errorMessage, setErrorMessage] = useState(null)
     const [isPaused, setIsPaused] = useState(false)
@@ -293,6 +343,7 @@ function ConversationSpace() {
 
         return () => {
             if (silenceTimerRef.current) clearTimeout(silenceTimerRef.current)
+            if (window.speechSynthesis) window.speechSynthesis.cancel()
             if (recognitionRef.current) {
                 try { recognitionRef.current.stop() } catch (e) {}
             }
@@ -344,6 +395,7 @@ function ConversationSpace() {
             isPausedRef.current = true
             stopListening()
             if (audioPlayerRef.current) audioPlayerRef.current.pause()
+            if (window.speechSynthesis) window.speechSynthesis.cancel()
             setIsProcessing(false)
         }
     }
@@ -364,6 +416,7 @@ function ConversationSpace() {
 
         setIsProcessing(true)
         setErrorMessage(null)
+        setAssistantReply("")
 
         const sessionContext = {
             subject: sessionConfig?.subject,
@@ -375,15 +428,39 @@ function ConversationSpace() {
         }
 
         try {
-            // Étape 7-12 : Envoi backend -> Transcription -> Texte cohérent LLM -> Synthèse TTS (adapté à la langue)
-            const arrayBuffer = await voiceApi.sendVoiceMessage(textToSend, chatHistoryRef.current, sessionContext)
-            
+            // Étape 7-12 : Envoi backend -> Texte cohérent LLM -> Synthèse TTS
+            const response = await voiceApi.sendVoiceMessage(textToSend, chatHistoryRef.current, sessionContext)
+            const arrayBuffer = response.data
+            let fallbackReply = ""
+
+            // Si Edge-TTS a échoué, le serveur renvoie du JSON avec le texte.
+            if (response.contentType.includes("application/json")) {
+                const raw = new TextDecoder().decode(arrayBuffer)
+                const payload = JSON.parse(raw)
+                if (!payload?.reply) {
+                    throw new Error(payload?.error || "L'assistant a renvoyé une réponse vide.")
+                }
+                fallbackReply = String(payload.reply).trim()
+            }
+
             const updatedHistory = [
                 ...chatHistoryRef.current,
                 { role: "user", content: textToSend }
             ]
+            if (fallbackReply) {
+                updatedHistory.push({ role: "assistant", content: fallbackReply })
+            }
             setChatHistory(updatedHistory)
             chatHistoryRef.current = updatedHistory
+
+            if (fallbackReply) {
+                // Secours : voix du navigateur + affichage du texte.
+                console.warn("==> Edge-TTS indisponible : lecture avec la voix du navigateur.")
+                setAssistantReply(fallbackReply)
+                await speakWithBrowser(fallbackReply, sessionContext.langue, sessionContext.niveau)
+                handleAiFinished()
+                return
+            }
 
             // Étape 13 : Le système lit le son produit à l’utilisateur
             if (audioPlayerRef.current && arrayBuffer && arrayBuffer.byteLength > 0) {
@@ -401,11 +478,16 @@ function ConversationSpace() {
                     handleAiFinished()
                 }
             } else {
-                handleAiFinished()
+                throw new Error("Le serveur n'a renvoyé aucun audio.")
             }
         } catch (err) {
             console.error("[Error🚨 Sending to backend]:", err)
-            handleAiFinished()
+            setAssistantReply("")
+            setIsProcessing(false)
+            stopListening()
+            setErrorMessage(
+                "L'assistant n'a pas pu répondre. Vérifiez votre connexion, puis cliquez sur « Réessayer »."
+            )
         }
     }
     handleSpeechFinishedRef.current = handleSpeechFinished
@@ -426,6 +508,7 @@ function ConversationSpace() {
     const handleFinishConversation = async () => {
         stopListening()
         if (audioPlayerRef.current) audioPlayerRef.current.pause()
+        if (window.speechSynthesis) window.speechSynthesis.cancel()
         setIsProcessing(false)
         setIsAnalyzing(true)
 
@@ -677,6 +760,13 @@ function ConversationSpace() {
                         {liveTranscript && (
                             <p className="text-slate-200 text-lg font-medium italic bg-slate-900/80 px-4 py-2 rounded-xl border border-slate-800">
                                 "{liveTranscript}"
+                            </p>
+                        )}
+
+                        {assistantReply && (
+                            <p className="text-cyan-100 text-sm sm:text-base leading-relaxed bg-cyan-950/50 px-4 py-3 rounded-xl border border-cyan-800/60 max-w-lg">
+                                <span className="font-semibold text-cyan-400">Assistant : </span>
+                                {assistantReply}
                             </p>
                         )}
 
