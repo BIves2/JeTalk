@@ -223,7 +223,9 @@ pnpm db:seed
 
 Une fois le déploiement terminé, testez :
 
-- `https://votre-service.onrender.com/api/health` → `{"status":"ok"}`
+- `https://votre-service.onrender.com/api/health` → `{"status":"ok","commit":"...","groqConfigured":true,"localModelAvailable":false}`
+  - `groqConfigured: false` : la variable `GROQ_API` n'est pas disponible sur Render.
+  - `commit` : doit correspondre au dernier commit déployé.
 - `https://votre-service.onrender.com/` → page d'accueil
 - `/terms`, `/privacy`, `/about` → pages légales (plus de 404)
 - `/login` → connexion, puis navigation dans le tableau de bord
@@ -245,8 +247,8 @@ Chaque `git push` sur `main` redéploie automatiquement le service Render.
 | Erreur CORS | Ajoutez l'URL exacte du frontend dans `CLIENT_URL` |
 | Les pages `/terms`, `/privacy`, `/about` renvoient 404 en production | Vérifiez que le build est bien lancé avec `pnpm start` (Express sert `dist/` et le fallback SPA) |
 | Erreur 401 / session perdue | Vérifiez `JWT_SECRET`, puis reconnectez-vous |
-| Traduction ou conversation indisponible (503) | Vérifiez `GROQ_API` ; le modèle local n'est pas déployé |
-| Assistant silencieux / aucune voix | `node-edge-tts` doit être en version `1.2.11` ou supérieure (correction du 403 Edge-TTS). En cas d'échec, le serveur renvoie le texte et le navigateur le lit |
+| Traduction ou conversation indisponible (503) | Ouvrez `/api/health`. Si `groqConfigured` vaut `false`, ajoutez la variable `GROQ_API` (nom exact, sans guillemets) dans **Render → Environment**, puis redéployez. Le détail de l'erreur est aussi visible dans la console du navigateur (`[AI detail]`) et dans les logs Render |
+| Assistant silencieux / aucune voix | `node-edge-tts` doit être en version `1.2.11` ou supérieure (correction du 403 Edge-TTS). Le serveur retente désormais trois fois ; en cas d'échec, il renvoie le texte et le navigateur le lit |
 | Build Render très long | `node-llama-cpp` est volumineux ; le modèle Qwen n'est pas téléchargé, seul le paquet l'est |
 | Base vide après déploiement | Le build Render exécute `db:init` et `db:seed`. Vérifiez les logs du build et les variables `DATABASE_URL` / `DATABASE_AUTH_TOKEN` |
 
