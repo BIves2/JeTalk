@@ -246,6 +246,7 @@ Chaque `git push` sur `main` redéploie automatiquement le service Render.
 | Les pages `/terms`, `/privacy`, `/about` renvoient 404 en production | Vérifiez que le build est bien lancé avec `pnpm start` (Express sert `dist/` et le fallback SPA) |
 | Erreur 401 / session perdue | Vérifiez `JWT_SECRET`, puis reconnectez-vous |
 | Traduction ou conversation indisponible (503) | Vérifiez `GROQ_API` ; le modèle local n'est pas déployé |
+| Assistant silencieux / aucune voix | `node-edge-tts` doit être en version `1.2.11` ou supérieure (correction du 403 Edge-TTS). En cas d'échec, le serveur renvoie le texte et le navigateur le lit |
 | Build Render très long | `node-llama-cpp` est volumineux ; le modèle Qwen n'est pas téléchargé, seul le paquet l'est |
 | Base vide après déploiement | Le build Render exécute `db:init` et `db:seed`. Vérifiez les logs du build et les variables `DATABASE_URL` / `DATABASE_AUTH_TOKEN` |
 
